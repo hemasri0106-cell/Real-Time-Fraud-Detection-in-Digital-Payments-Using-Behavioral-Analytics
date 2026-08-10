@@ -1,0 +1,48 @@
+# --- Python / FastAPI backend ---
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+.python-version
+
+# --- Node / React (Vite) frontend ---
+node_modules/
+dist/
+dist-ssr/
+build/
+*.local
+.vite/
+
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+
+# --- Database ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Logs ---
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# --- OS / editor ---
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

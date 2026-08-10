@@ -1,0 +1,11 @@
+user_id,profile_name,row_count,fraud_count,fraud_rate_pct,amount_min,amount_max,file
+1,College Student,5000,153,3.06,50.48,18000.0,user_01_transactions.csv
+2,Software Engineer,5000,211,4.22,212.61,60000.0,user_02_transactions.csv
+3,Homemaker,5000,224,4.48,85.36,3000.0,user_03_transactions.csv
+4,Business Owner,5000,188,3.76,2151.4,73719.09,user_04_transactions.csv
+5,Sales Executive,5000,188,3.76,208.53,100000.0,user_05_transactions.csv
+6,Doctor,5000,157,3.14,528.88,15000.0,user_06_transactions.csv
+7,Retired Senior Citizen,5000,232,4.64,104.69,45000.0,user_07_transactions.csv
+8,Online Shopper,5000,160,3.2,325.55,40000.0,user_08_transactions.csv
+9,Freelancer,5000,163,3.26,219.15,32000.0,user_09_transactions.csv
+10,Frequent Traveler,5000,228,4.56,534.26,50000.0,user_10_transactions.csv
