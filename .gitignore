@@ -46,3 +46,7 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# --- Machine Learning ---
+data/
+models/
