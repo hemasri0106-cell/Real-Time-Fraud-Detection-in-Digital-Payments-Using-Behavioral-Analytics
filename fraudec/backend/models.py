@@ -7,6 +7,7 @@ from database import Base
 class UserRole(str, enum.Enum):
     admin = "admin"
     analyst = "analyst"
+    persona = "persona"
 
 
 class User(Base):

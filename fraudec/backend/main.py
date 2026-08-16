@@ -72,6 +72,51 @@ def read_current_user(current_user: models.User = Depends(auth.get_current_user)
     return current_user
 
 
+from pydantic import BaseModel
+import ml_service
+
+class DemoLoginRequest(BaseModel):
+    persona_name: str
+    user_id: str
+
+@app.post("/api/auth/demo-login")
+def demo_login(request: DemoLoginRequest):
+    access_token = auth.create_access_token(
+        data={"sub": request.persona_name, "role": models.UserRole.persona, "user_id": request.user_id}
+    )
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer", 
+        "user": {"username": request.persona_name, "role": "persona", "user_id": request.user_id}
+    }
+
+@app.get("/api/metrics")
+def get_metrics(current_user: models.User = Depends(auth.get_current_user)):
+    user_id = getattr(current_user, "user_id", None)
+    if not user_id:
+        raise HTTPException(status_code=400, detail="Not a persona user")
+    metrics = ml_service.get_user_metrics(user_id)
+    return metrics
+
+@app.get("/api/transactions")
+def get_transactions(limit: int = 50, offset: int = 0, current_user: models.User = Depends(auth.get_current_user)):
+    user_id = getattr(current_user, "user_id", None)
+    if not user_id:
+        raise HTTPException(status_code=400, detail="Not a persona user")
+    txs = ml_service.get_transactions(user_id, limit, offset)
+    return {"transactions": txs}
+
+@app.post("/api/predict")
+def predict(payload: dict, current_user: models.User = Depends(auth.get_current_user)):
+    user_id = getattr(current_user, "user_id", None)
+    if not user_id:
+        raise HTTPException(status_code=400, detail="Not a persona user")
+    try:
+        result = ml_service.predict_transaction(user_id, payload)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
