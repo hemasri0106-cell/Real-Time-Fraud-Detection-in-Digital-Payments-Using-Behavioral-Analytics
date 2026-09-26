@@ -43,8 +43,18 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
+        role: str = payload.get("role")
+        user_id: str = payload.get("user_id")
+        
         if username is None:
             raise credentials_exception
+            
+        if role == "persona":
+            user = models.User(username=username, email=f"{username}@demo.local", role=models.UserRole.persona)
+            # Store the specific dataset user_id on the user object (e.g. 'user_01')
+            user.user_id = user_id
+            return user
+            
     except JWTError:
         raise credentials_exception
 

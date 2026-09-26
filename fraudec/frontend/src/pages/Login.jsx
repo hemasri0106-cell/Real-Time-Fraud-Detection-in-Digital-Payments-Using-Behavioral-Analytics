@@ -125,6 +125,46 @@ export default function Login() {
     }
   }
 
+  const personas = [
+    { name: 'Student', user_id: 'user_01' },
+    { name: 'Doctor', user_id: 'user_02' },
+    { name: 'Homeowner', user_id: 'user_03' },
+    { name: 'Teacher', user_id: 'user_04' },
+    { name: 'Software Engineer', user_id: 'user_05' },
+    { name: 'Business Owner', user_id: 'user_06' },
+    { name: 'Freelancer', user_id: 'user_07' },
+    { name: 'Retired Person', user_id: 'user_08' },
+    { name: 'Shop Owner', user_id: 'user_09' },
+    { name: 'Corporate Employee', user_id: 'user_10' }
+  ]
+
+  async function handleDemoLogin(persona) {
+    setError('')
+    setSubmitting(true)
+
+    try {
+      const response = await fetch(`${API_BASE}/api/auth/demo-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          persona_name: persona.name,
+          user_id: persona.user_id,
+        }),
+      })
+
+      if (!response.ok) {
+        setError('Demo login failed. Is the backend running?')
+        setSubmitting(false)
+        return
+      }
+      const data = await response.json()
+      completeAuth(data)
+    } catch {
+      setError('Could not reach the server. Is the backend running?')
+      setSubmitting(false)
+    }
+  }
+
   const isSignIn = mode === 'signin'
 
   return (
@@ -143,8 +183,8 @@ export default function Login() {
             <button
               type="button"
               role="tab"
-              aria-selected={isSignIn}
-              className={`login__tab ${isSignIn ? 'login__tab--active' : ''}`}
+              aria-selected={mode === 'signin'}
+              className={`login__tab ${mode === 'signin' ? 'login__tab--active' : ''}`}
               onClick={() => switchMode('signin')}
             >
               Sign in
@@ -152,20 +192,48 @@ export default function Login() {
             <button
               type="button"
               role="tab"
-              aria-selected={!isSignIn}
-              className={`login__tab ${!isSignIn ? 'login__tab--active' : ''}`}
+              aria-selected={mode === 'signup'}
+              className={`login__tab ${mode === 'signup' ? 'login__tab--active' : ''}`}
               onClick={() => switchMode('signup')}
             >
               Create account
             </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'demo'}
+              className={`login__tab ${mode === 'demo' ? 'login__tab--active' : ''}`}
+              onClick={() => switchMode('demo')}
+            >
+              Demo Login
+            </button>
           </div>
 
-          <h1 className="login__title">{isSignIn ? 'Sign in' : 'Create account'}</h1>
+          <h1 className="login__title">{mode === 'demo' ? 'Select Persona' : (mode === 'signin' ? 'Sign in' : 'Create account')}</h1>
           <p className="login__subtitle">
-            {isSignIn ? 'Analyst and admin access only' : 'Register for analyst access'}
+            {mode === 'demo' ? 'Login instantly as a personalized synthetic user.' : (mode === 'signin' ? 'Analyst and admin access only' : 'Register for analyst access')}
           </p>
 
-          {isSignIn ? (
+          {mode === 'demo' ? (
+            <div className="login__demo-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '20px' }}>
+              {personas.map(p => (
+                <button 
+                  key={p.user_id} 
+                  className="login__submit" 
+                  style={{ margin: 0, padding: '10px', fontSize: '14px', backgroundColor: '#1a1f36', border: '1px solid #3b4261', color: '#8f9bba' }}
+                  onClick={() => handleDemoLogin(p)}
+                  disabled={submitting}
+                  onMouseOver={e => { e.currentTarget.style.backgroundColor = '#2a3150'; e.currentTarget.style.color = '#fff' }}
+                  onMouseOut={e => { e.currentTarget.style.backgroundColor = '#1a1f36'; e.currentTarget.style.color = '#8f9bba' }}
+                >
+                  {p.name}
+                </button>
+              ))}
+              <div className="login__error" role="alert" style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
+                {error}
+              </div>
+            </div>
+          ) : mode === 'signin' ? (
             <form className="login__form" onSubmit={handleSignIn}>
               <label className="login__field">
                 <span className="login__field-label">Username</span>

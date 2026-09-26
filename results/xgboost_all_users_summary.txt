@@ -1,0 +1,154 @@
+XGBoost Results and Best Hyperparameters for All Users (01-10)
+============================================================
+
+--- user_01 ---
+Test F1:      0.9905
+Test Recall:  1.0000
+Test Prec:    0.9811
+Test ROC-AUC: 0.9999
+Test PR-AUC:  0.9993
+Best Hyperparameters:
+  n_estimators: 200
+  max_depth: 7
+  learning_rate: 0.05
+  subsample: 0.8
+  colsample_bytree: 0.8
+  min_child_weight: 1
+  best_iteration (early stopping): 196
+
+--- user_02 ---
+Test F1:      0.9905
+Test Recall:  1.0000
+Test Prec:    0.9811
+Test ROC-AUC: 0.9999
+Test PR-AUC:  0.9992
+Best Hyperparameters:
+  n_estimators: 100
+  max_depth: 7
+  learning_rate: 0.1
+  subsample: 0.8
+  colsample_bytree: 0.8
+  min_child_weight: 3
+  best_iteration (early stopping): 98
+
+--- user_03 ---
+Test F1:      0.9931
+Test Recall:  1.0000
+Test Prec:    0.9863
+Test ROC-AUC: 1.0000
+Test PR-AUC:  0.9996
+Best Hyperparameters:
+  n_estimators: 100
+  max_depth: 7
+  learning_rate: 0.1
+  subsample: 1.0
+  colsample_bytree: 1.0
+  min_child_weight: 1
+  best_iteration (early stopping): 98
+
+--- user_04 ---
+Test F1:      0.9735
+Test Recall:  1.0000
+Test Prec:    0.9484
+Test ROC-AUC: 1.0000
+Test PR-AUC:  0.9997
+Best Hyperparameters:
+  n_estimators: 300
+  max_depth: 5
+  learning_rate: 0.05
+  subsample: 1.0
+  colsample_bytree: 1.0
+  min_child_weight: 3
+  best_iteration (early stopping): 289
+
+--- user_05 ---
+Test F1:      0.9905
+Test Recall:  1.0000
+Test Prec:    0.9811
+Test ROC-AUC: 0.9999
+Test PR-AUC:  0.9992
+Best Hyperparameters:
+  n_estimators: 100
+  max_depth: 7
+  learning_rate: 0.1
+  subsample: 0.8
+  colsample_bytree: 0.8
+  min_child_weight: 3
+  best_iteration (early stopping): 98
+
+--- user_06 ---
+Test F1:      0.9931
+Test Recall:  1.0000
+Test Prec:    0.9863
+Test ROC-AUC: 1.0000
+Test PR-AUC:  0.9996
+Best Hyperparameters:
+  n_estimators: 100
+  max_depth: 7
+  learning_rate: 0.1
+  subsample: 1.0
+  colsample_bytree: 1.0
+  min_child_weight: 1
+  best_iteration (early stopping): 98
+
+--- user_07 ---
+Test F1:      0.9735
+Test Recall:  1.0000
+Test Prec:    0.9484
+Test ROC-AUC: 1.0000
+Test PR-AUC:  0.9997
+Best Hyperparameters:
+  n_estimators: 300
+  max_depth: 5
+  learning_rate: 0.05
+  subsample: 1.0
+  colsample_bytree: 1.0
+  min_child_weight: 3
+  best_iteration (early stopping): 289
+
+--- user_08 ---
+Test F1:      0.9798
+Test Recall:  1.0000
+Test Prec:    0.9605
+Test ROC-AUC: 0.9999
+Test PR-AUC:  0.9989
+Best Hyperparameters:
+  n_estimators: 200
+  max_depth: 5
+  learning_rate: 0.05
+  subsample: 0.8
+  colsample_bytree: 0.8
+  min_child_weight: 3
+  best_iteration (early stopping): 172
+
+--- user_09 ---
+Test F1:      0.9938
+Test Recall:  0.9938
+Test Prec:    0.9938
+Test ROC-AUC: 1.0000
+Test PR-AUC:  0.9999
+Best Hyperparameters:
+  n_estimators: 300
+  max_depth: 7
+  learning_rate: 0.05
+  subsample: 1.0
+  colsample_bytree: 0.8
+  min_child_weight: 1
+  best_iteration (early stopping): 299
+
+--- user_10 ---
+Test F1:      0.9806
+Test Recall:  1.0000
+Test Prec:    0.9620
+Test ROC-AUC: 1.0000
+Test PR-AUC:  0.9998
+Best Hyperparameters:
+  n_estimators: 100
+  max_depth: 7
+  learning_rate: 0.03
+  subsample: 1.0
+  colsample_bytree: 0.8
+  min_child_weight: 1
+  best_iteration (early stopping): 99
+
+End of Summary.
