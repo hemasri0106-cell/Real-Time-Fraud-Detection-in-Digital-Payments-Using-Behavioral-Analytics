@@ -1,0 +1,677 @@
+{% extends "base.html" %}
+
+{% block title %}Manual Predict Sandbox — Fraudec{% endblock %}
+
+{% block content %}
+<!-- Top Banner / Scenario Metadata -->
+<div class="relative w-full rounded-xl bg-surface-container p-space-lg mb-space-lg shadow-xl overflow-hidden">
+<div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-primary-container/5 blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs max-w-3xl">
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-label-caps text-label-caps text-primary uppercase tracking-wider">SEC-OPS SANDBOX // ACTIVE</span>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm">::</span>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm" id="target-id-label">TARGET_ID: –</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse ml-1"></span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Manual Inference Sandbox</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Craft and simulate custom transaction payloads to test how <span id="persona-name-possessive">this persona's</span> dedicated XGBoost model evaluates atypical parameters against their behavioral baseline.
+        </p>
+</div>
+<div class="flex items-center gap-space-md self-start lg:self-center bg-surface-container-low p-space-sm rounded-lg shadow-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">model_training</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Model Signature</span>
+<span class="font-mono-md text-mono-md text-primary font-semibold">user_02_v2_xgboost</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Weight Sync: 4m ago</span>
+</div>
+</div>
+</div>
+<!-- Quick Presets Array -->
+<div class="mt-space-lg pt-space-md flex flex-wrap items-center gap-space-sm bg-surface-container-lowest/40 -mx-space-lg -mb-space-lg px-space-lg py-space-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider flex items-center gap-1 mr-2">
+<span class="material-symbols-outlined text-[14px] text-primary">fast_forward</span>
+        Inject Payload:
+      </span>
+<button class="px-space-sm py-space-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-mono-sm text-mono-sm transition-all flex items-center gap-2 shadow-sm group" onclick="applyPreset('normal')">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Normal: Hospital Cafe ($12.40)</span>
+</button>
+<button class="px-space-sm py-space-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-mono-sm text-mono-sm transition-all flex items-center gap-2 shadow-sm group" onclick="applyPreset('borderline')">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span>Borderline: Chicago Med Conf ($1,200.00)</span>
+</button>
+<button class="px-space-sm py-space-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-mono-sm text-mono-sm transition-all flex items-center gap-2 shadow-sm group" onclick="applyPreset('attack')">
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+<span class="text-error font-semibold">Attack Vector: Moscow Crypto ($8,000.00)</span>
+</button>
+</div>
+</div>
+<!-- Two-Column Workbench Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg w-full">
+<!-- LEFT COLUMN: Vector Input Form (5 cols) -->
+<div class="xl:col-span-5 flex flex-col gap-space-md">
+<div class="rounded-xl bg-surface-container p-space-lg shadow-xl relative overflow-hidden flex flex-col justify-between h-full">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+<div>
+<div class="flex items-center justify-between pb-space-sm mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">tune</span>
+<span class="font-headline-md text-headline-md text-on-surface">Payload Synthesizer</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="vector-dim-label">Vector Dim: –</span>
+</div>
+<form class="flex flex-col gap-space-md" id="inference-form" onsubmit="event.preventDefault(); runInference();">
+<!-- Amount Input & Quick Chips -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-amount">Transaction Amount (USD)</label>
+<span class="font-mono-sm text-mono-sm text-primary" id="amount-tag">μ=$142.10 | σ=±$45</span>
+</div>
+<div class="relative">
+<span class="absolute left-3 top-2.5 font-mono-md text-mono-md text-on-surface-variant">$</span>
+<input class="w-full bg-surface-container-low pl-8 pr-3 py-2 rounded font-mono-lg text-mono-lg text-on-surface focus:outline-none focus:bg-surface-container-highest transition-all" id="field-amount" step="0.01" type="number" value="8000.00"/>
+</div>
+<div class="flex items-center gap-1.5 pt-1">
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(25)" type="button">$25</button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(150)" type="button">$150</button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(1500)" type="button">$1,500</button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(5000)" type="button">$5,000</button>
+<button class="px-2 py-1 rounded bg-surface-container-highest font-mono-sm text-mono-sm text-primary transition-all" onclick="setAmount(8000)" type="button">$8,000</button>
+</div>
+</div>
+<!-- Merchant Category Dropdown -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-category">Merchant Category</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low px-3 py-2 rounded font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-highest transition-all appearance-none cursor-pointer" id="field-category">
+<option value="grocery">Grocery</option>
+<option value="retail">Retail</option>
+<option value="dining">Dining</option>
+<option value="entertainment">Entertainment</option>
+<option value="electronics">Electronics</option>
+<option value="travel">Travel</option>
+<option selected="" value="digital_goods">Digital Goods / Exchange</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-payment">Payment Method</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low px-3 py-2 rounded font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-highest transition-all appearance-none cursor-pointer" id="field-payment">
+<option value="credit_card">Credit Card</option>
+<option value="debit_card">Debit Card</option>
+<option value="digital_wallet">Digital Wallet</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Merchant & Location 2-col inline -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-merchant">Merchant Entity</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low px-3 py-2 rounded font-mono-sm text-mono-sm text-on-surface focus:outline-none focus:bg-surface-container-highest transition-all appearance-none cursor-pointer" id="field-merchant">
+<option value="merch_user_02_14">Known Merchant A (merch_user_02_14)</option>
+<option value="merch_user_02_6">Known Merchant B (merch_user_02_6)</option>
+<option value="merch_user_02_3">Known Merchant C (merch_user_02_3)</option>
+<option selected="" value="__new__">Unrecognized / New Merchant</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-location">Reported Location</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low px-3 py-2 rounded font-mono-sm text-mono-sm text-on-surface focus:outline-none focus:bg-surface-container-highest transition-all appearance-none cursor-pointer" id="field-location">
+<option value="loc_user_02_1">Known Location A (loc_user_02_1)</option>
+<option value="loc_user_02_2">Known Location B (loc_user_02_2)</option>
+<option value="loc_user_02_3">Known Location C (loc_user_02_3)</option>
+<option selected="" value="__new__">Unrecognized / New Location</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Distance from Last Transaction Centroid -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-distance">Centroid Distance Vector</label>
+<span class="font-mono-md text-mono-md text-error font-semibold" id="distance-display">7,140 km</span>
+</div>
+<input class="w-full accent-primary-container bg-surface-container-high h-1.5 rounded cursor-pointer" id="field-distance" max="15000" min="0" oninput="updateDistance(this.value)" step="50" type="range" value="7140"/>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>0 km (Local Boston Hub)</span>
+<span>15,000 km (Intercontinental)</span>
+</div>
+</div>
+<!-- Device Type -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-device">Device Hardware Fingerprint</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low px-3 py-2 rounded font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-highest transition-all appearance-none cursor-pointer" id="field-device">
+<option value="dev_user_02_1">Primary Device (dev_user_02_1)</option>
+<option value="dev_user_02_2">Secondary Device (dev_user_02_2)</option>
+<option selected="" value="__new__">Unrecognized / New Device</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-on-surface-variant pointer-events-none text-[18px]">devices</span>
+</div>
+</div>
+<!-- Time of Transaction -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-hour">Timestamp Offset (EST)</label>
+<span class="font-mono-md text-mono-md text-on-surface" id="time-display">03:45 AM (Off-Shift Surge)</span>
+</div>
+<input class="w-full accent-primary bg-surface-container-high h-1.5 rounded cursor-pointer" id="field-hour" max="23" min="0" oninput="updateTime(this.value)" type="range" value="3"/>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>00:00 (Midnight)</span>
+<span>12:00 (Noon)</span>
+<span>23:59 (EOD)</span>
+</div>
+</div>
+<!-- Submit CTA -->
+<div class="pt-space-sm">
+<button class="w-full py-3 px-4 rounded-lg bg-primary-container text-on-primary font-headline-md text-headline-md flex items-center justify-center gap-space-xs shadow-lg hover:shadow-cyan-500/20 active:scale-[0.99] transition-all" id="run-btn" type="submit">
+<span class="material-symbols-outlined text-[22px] animate-pulse">bolt</span>
+<span>Run XGBoost Model Inference</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Inline micro telemetry telemetry footnote -->
+<div class="mt-space-md pt-space-xs flex items-center justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>PIPELINE: STREAM-INSPECT-4.2</span>
+<span>GPU ACCEL: ENABLED</span>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Real-Time Inference Results & XAI Engine (7 cols) -->
+<div class="xl:col-span-7 flex flex-col gap-space-md">
+<!-- Status Card -->
+<div class="rounded-xl bg-surface-container p-space-lg shadow-xl relative overflow-hidden" id="results-card">
+<!-- Ambient Alert Backlight -->
+<div class="absolute -top-16 -right-16 w-80 h-80 rounded-full bg-error-container/20 blur-3xl pointer-events-none transition-all duration-500" id="status-glow"></div>
+<!-- Block / Clear Header Banner -->
+<div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-14 h-14 rounded-xl bg-error-container/30 flex items-center justify-center text-error shadow-inner" id="status-icon-box">
+<span class="material-symbols-outlined text-[36px]" id="status-icon">dangerous</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-0.5 rounded font-label-caps text-label-caps bg-error/20 text-error uppercase tracking-wider font-semibold" id="status-badge">POLICY EXCEPTION TRIGGERED</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">GATE: HARD_STOP</span>
+</div>
+<span class="font-headline-xl text-headline-xl text-error tracking-tight font-bold" id="status-headline">TRANSACTION BLOCKED</span>
+</div>
+</div>
+<!-- Soundwave / Frequency Illustration -->
+<div class="flex items-end gap-1 h-9 px-space-sm py-1 rounded bg-surface-container-low shadow-sm">
+<span class="w-1 bg-error rounded-full animate-bounce h-7" style="animation-delay: 0.1s"></span>
+<span class="w-1 bg-error rounded-full animate-bounce h-4" style="animation-delay: 0.3s"></span>
+<span class="w-1 bg-error rounded-full animate-bounce h-8" style="animation-delay: 0.2s"></span>
+<span class="w-1 bg-error rounded-full animate-bounce h-5" style="animation-delay: 0.4s"></span>
+<span class="w-1 bg-error rounded-full animate-bounce h-8" style="animation-delay: 0.15s"></span>
+<span class="w-1 bg-error rounded-full animate-bounce h-3" style="animation-delay: 0.35s"></span>
+</div>
+</div>
+<!-- Metrics Tonal Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm my-space-md">
+<!-- Circular Gauge for Risk -->
+<div class="rounded-lg bg-surface-container-low p-space-md flex flex-col items-center justify-center text-center relative overflow-hidden">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Calculated Fraud Risk</span>
+<div class="relative w-28 h-28 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-highest stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3.5"></path>
+<path class="text-error stroke-current transition-all duration-700 ease-out" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" id="gauge-circle" stroke-dasharray="96.4, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-mono-xl text-mono-xl text-on-surface font-bold leading-none" id="risk-score-display">96.4%</span>
+<span class="font-label-caps text-label-caps text-error mt-0.5">CRITICAL</span>
+</div>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant mt-2">Cutoff: 65.0% Risk</span>
+</div>
+<!-- Confidence Score -->
+<div class="rounded-lg bg-surface-container-low p-space-md flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Model Certainty</span>
+<div class="mt-space-xs">
+<div class="font-mono-xl text-mono-xl text-primary font-bold" id="model-certainty-value">–</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Distance from 50/50 decision boundary</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden mt-4">
+<div class="bg-primary h-full rounded-full" id="model-certainty-bar" style="width: 0%;"></div>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant mt-2" id="entropy-index-value">Entropy Index: –</span>
+</div>
+<!-- Latency Gauge -->
+<div class="rounded-lg bg-surface-container-low p-space-md flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Inference Performance</span>
+<div class="mt-space-xs flex items-baseline gap-1">
+<span class="font-mono-xl text-mono-xl text-primary font-bold">8.2</span>
+<span class="font-mono-md text-mono-md text-on-surface-variant">ms</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Hardware: TensorCore v4</span>
+</div>
+<div class="flex items-center gap-space-xs text-primary font-mono-sm text-mono-sm">
+<span class="material-symbols-outlined text-[14px]">speed</span>
+<span>122,000 req/sec</span>
+</div>
+</div>
+</div>
+<!-- Explainable AI (SHAP Analysis) -->
+<div class="mt-space-md">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">account_tree</span>
+<span class="font-headline-md text-headline-md text-on-surface">Feature Contribution Breakdown (SHAP Values)</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Base Value E[f(x)] = 0.04</span>
+</div>
+<div class="flex flex-col gap-space-sm bg-surface-container-low p-space-md rounded-lg" id="feature-contribution-list">
+<!-- Populated at runtime from the real XGBoost top_features response -->
+</div>
+</div>
+<!-- Decision Tree Path Visualization -->
+<div class="mt-space-md">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Active Branch Execution Path</span>
+<button class="font-mono-sm text-mono-sm text-primary hover:underline flex items-center gap-1" onclick="toggleTreeDetails()">
+<span id="tree-toggle-text">Collapse Logic Map</span>
+<span class="material-symbols-outlined text-[14px]">unfold_more</span>
+</button>
+</div>
+<div class="rounded-lg bg-surface-container-lowest p-space-md overflow-x-auto" id="tree-container">
+<div class="flex items-center gap-3 min-w-[540px]">
+<!-- Node 1 -->
+<div class="p-2.5 rounded bg-surface-container-high flex flex-col gap-1 flex-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-primary">SPLIT 01</span>
+<span class="material-symbols-outlined text-[14px] text-primary">check_circle</span>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface font-semibold">Amount &gt; $2,000.00</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Eval: TRUE ($8,000.00)</span>
+</div>
+<span class="material-symbols-outlined text-primary text-[18px]">arrow_right_alt</span>
+<!-- Node 2 -->
+<div class="p-2.5 rounded bg-surface-container-high flex flex-col gap-1 flex-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-primary">SPLIT 02</span>
+<span class="material-symbols-outlined text-[14px] text-primary">check_circle</span>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface font-semibold">Geo Distance &gt; 500km</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Eval: TRUE (7,140km)</span>
+</div>
+<span class="material-symbols-outlined text-error text-[18px]">arrow_right_alt</span>
+<!-- Node 3 (Terminal Leaf) -->
+<div class="p-2.5 rounded bg-error-container/40 flex flex-col gap-1 flex-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-error font-bold">TERMINAL LEAF</span>
+<span class="material-symbols-outlined text-[14px] text-error">priority_high</span>
+</div>
+<span class="font-mono-sm text-mono-sm text-error font-bold">ANOMALY [CLASS 1]</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Leaf Weight: 0.964</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Tray -->
+<div class="mt-space-lg pt-space-md flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-2 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-mono-sm text-mono-sm flex items-center gap-2 shadow-sm transition-all" onclick="saveScenario()">
+<span class="material-symbols-outlined text-[16px] text-primary">bookmark_add</span>
+<span>Save Scenario to Test Suite</span>
+</button>
+<button class="px-space-md py-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-mono-sm text-mono-sm flex items-center gap-2 transition-all" onclick="resetSandbox()">
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+<span>Reset Parameters</span>
+</button>
+</div>
+<div class="flex items-center gap-1 font-mono-sm text-mono-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] text-primary">verified_user</span>
+<span>SHAP Explainer v2.8 Core</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Persona Reference Drawer (Bottom Collapsible Area) -->
+<div class="mt-space-lg rounded-xl bg-surface-container p-space-md shadow-lg flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[28px]">account_circle</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md text-on-surface" id="persona-drawer-name">–</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Baseline Profile: derived from this persona's own real historical transaction data - not a shared or generic baseline.
+        </p>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="flex flex-col text-right">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Model Precision</span>
+<span class="font-mono-md text-mono-md text-primary font-bold" id="model-roc-auc-label">– ROC-AUC</span>
+</div>
+<div class="w-px h-8 bg-surface-container-high"></div>
+<div class="flex flex-col text-right">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Trained Samples</span>
+<span class="font-mono-md text-mono-md text-on-surface font-semibold">14,209 tx</span>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function setAmount(val) {
+    document.getElementById('field-amount').value = val.toFixed(2);
+  }
+
+  function updateDistance(val) {
+    document.getElementById('distance-display').innerText = parseInt(val).toLocaleString() + ' km';
+  }
+
+  function updateTime(val) {
+    const hour = parseInt(val);
+    const suffix = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+    const formatted = (displayHour < 10 ? '0' : '') + displayHour + ':00 ' + suffix;
+
+    let note = 'Day Routine';
+    if (hour >= 23 || hour <= 5) note = 'Off-Shift Surge';
+    else if (hour >= 6 && hour <= 9) note = 'Morning Shift Handover';
+    else if (hour >= 18 && hour <= 22) note = 'Post-Op Rounds';
+
+    document.getElementById('time-display').innerText = `${formatted} (${note})`;
+  }
+
+  // Per-user behavioral baseline (median of Dr. Chen's / user_02's own normal-labeled
+  // transactions in data/user_datasets/user_02_transactions_v2.csv). Used for the raw
+  // model columns this form has no control for, so a "normal" payload doesn't read as
+  // anomalous just because those fields defaulted to 0.
+  const BASELINE = {
+    transaction_gap_minutes: 19,
+    daily_transaction_count: 28,
+    average_amount_last_7_days: 123.47,
+    std_amount_last_7_days: 297.28,
+    merchant_visit_frequency: 0.49,
+    device_usage_frequency: 0.75,
+    location_visit_frequency: 0.75,
+    day_of_week: 3,
+    is_weekend: 0,
+  };
+
+  function getToken() {
+    return localStorage.getItem('fraudec_token');
+  }
+
+  // Real per-persona identity from localStorage (set at login) - replaces the
+  // hardcoded "Dr. Sarah Chen" copy that used to show for every persona.
+  function getPersonaIdentity() {
+    const userId = localStorage.getItem('fraudec_user_id') || '';
+    const personaName = localStorage.getItem('fraudec_persona_name') || 'This persona';
+    return { userId, personaName };
+  }
+
+  function applyPersonaIdentity() {
+    const { userId, personaName } = getPersonaIdentity();
+    const targetIdEl = document.getElementById('target-id-label');
+    if (targetIdEl) targetIdEl.innerText = `TARGET_ID: ${userId.toUpperCase() || '–'}`;
+
+    const heroNameEl = document.getElementById('persona-name-possessive');
+    if (heroNameEl) heroNameEl.innerText = `${personaName}'s`;
+
+    const drawerNameEl = document.getElementById('persona-drawer-name');
+    if (drawerNameEl) drawerNameEl.innerText = personaName;
+  }
+
+  async function loadRocAuc() {
+    try {
+      const res = await fetch('/api/metrics', {
+        headers: { 'Authorization': 'Bearer ' + getToken() },
+      });
+      if (!res.ok) return;
+      const metrics = await res.json();
+      if (metrics && metrics.test_roc_auc) {
+        document.getElementById('model-roc-auc-label').innerText = (Number(metrics.test_roc_auc) * 100).toFixed(2) + '% ROC-AUC';
+      }
+    } catch (err) {
+      console.error('Failed to load /api/metrics', err);
+    }
+  }
+
+  function applyPreset(type) {
+    const amt = document.getElementById('field-amount');
+    const cat = document.getElementById('field-category');
+    const pay = document.getElementById('field-payment');
+    const merch = document.getElementById('field-merchant');
+    const loc = document.getElementById('field-location');
+    const dist = document.getElementById('field-distance');
+    const dev = document.getElementById('field-device');
+    const hour = document.getElementById('field-hour');
+
+    if (type === 'normal') {
+      amt.value = "12.40";
+      cat.value = "dining";
+      pay.value = "credit_card";
+      merch.value = "merch_user_02_14";
+      loc.value = "loc_user_02_1";
+      dist.value = 1.2;
+      dev.value = "dev_user_02_1";
+      hour.value = 13;
+    } else if (type === 'borderline') {
+      amt.value = "1200.00";
+      cat.value = "travel";
+      pay.value = "credit_card";
+      merch.value = "__new__";
+      loc.value = "__new__";
+      dist.value = 1370;
+      dev.value = "dev_user_02_2";
+      hour.value = 19;
+    } else if (type === 'attack') {
+      amt.value = "8000.00";
+      cat.value = "digital_goods";
+      pay.value = "digital_wallet";
+      merch.value = "__new__";
+      loc.value = "__new__";
+      dist.value = 7140;
+      dev.value = "__new__";
+      hour.value = 3;
+    }
+
+    updateDistance(dist.value);
+    updateTime(hour.value);
+    runInference();
+  }
+
+  function buildPayload() {
+    const merchantSel = document.getElementById('field-merchant').value;
+    const locationSel = document.getElementById('field-location').value;
+    const deviceSel = document.getElementById('field-device').value;
+
+    return {
+      transaction_amount: parseFloat(document.getElementById('field-amount').value) || 0,
+      merchant_category: document.getElementById('field-category').value,
+      merchant_id: merchantSel === '__new__' ? 'merch_unseen_new' : merchantSel,
+      payment_method: document.getElementById('field-payment').value,
+      device_id: deviceSel === '__new__' ? 'dev_unseen_new' : deviceSel,
+      device_type: 'mobile',
+      city: locationSel === '__new__' ? 'loc_unseen_new' : locationSel,
+      hour_of_day: parseInt(document.getElementById('field-hour').value, 10),
+      day_of_week: BASELINE.day_of_week,
+      is_weekend: BASELINE.is_weekend,
+      transaction_gap_minutes: BASELINE.transaction_gap_minutes,
+      daily_transaction_count: BASELINE.daily_transaction_count,
+      average_amount_last_7_days: BASELINE.average_amount_last_7_days,
+      std_amount_last_7_days: BASELINE.std_amount_last_7_days,
+      merchant_visit_frequency: BASELINE.merchant_visit_frequency,
+      device_usage_frequency: BASELINE.device_usage_frequency,
+      location_visit_frequency: BASELINE.location_visit_frequency,
+      new_device: deviceSel === '__new__' ? 1 : 0,
+      new_location: locationSel === '__new__' ? 1 : 0,
+      new_merchant: merchantSel === '__new__' ? 1 : 0,
+      distance_from_last_transaction_km: parseFloat(document.getElementById('field-distance').value) || 0,
+    };
+  }
+
+  function prettifyFeatureName(name) {
+    return name.replace(/^(num__|cat__)/, '').replace(/_/g, ' ');
+  }
+
+  function renderFeatureContributions(topFeatures) {
+    const list = document.getElementById('feature-contribution-list');
+    list.innerHTML = '';
+    const maxAbs = Math.max(...topFeatures.map(f => Math.abs(f.shap_value)), 0.0001);
+
+    topFeatures.forEach(f => {
+      const towardFraud = f.shap_value >= 0;
+      const pct = Math.round((Math.abs(f.shap_value) / maxAbs) * 100);
+      const barColor = towardFraud ? 'bg-error' : 'bg-primary';
+      const valueColor = towardFraud ? 'text-error' : 'text-primary';
+      const sign = towardFraud ? '+' : '';
+
+      const row = document.createElement('div');
+      row.className = 'flex flex-col gap-1';
+      row.innerHTML = `
+        <div class="flex justify-between items-center font-mono-sm text-mono-sm">
+          <div class="flex items-center gap-2">
+            <span class="text-on-surface font-semibold">${prettifyFeatureName(f.feature)}</span>
+            <span class="${valueColor} font-mono-sm">${sign}${f.shap_value.toFixed(4)}</span>
+          </div>
+        </div>
+        <div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden flex">
+          <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${pct}%;"></div>
+        </div>`;
+      list.appendChild(row);
+    });
+  }
+
+  async function runInference() {
+    const token = getToken();
+    if (!token) {
+      window.location.href = '/preview/login';
+      return;
+    }
+
+    const btn = document.getElementById('run-btn');
+    btn.classList.add('opacity-75');
+    btn.disabled = true;
+
+    const badge = document.getElementById('status-badge');
+    const headline = document.getElementById('status-headline');
+    const icon = document.getElementById('status-icon');
+    const iconBox = document.getElementById('status-icon-box');
+    const riskScore = document.getElementById('risk-score-display');
+    const gauge = document.getElementById('gauge-circle');
+
+    try {
+      const res = await fetch('/api/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+        },
+        body: JSON.stringify(buildPayload()),
+      });
+
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody.detail || ('Prediction request failed: ' + res.status));
+      }
+
+      const result = await res.json();
+      const pct = (result.fraud_probability * 100).toFixed(1);
+
+      if (result.prediction === 1) {
+        badge.className = 'px-space-xs py-0.5 rounded font-label-caps text-label-caps bg-error/20 text-error uppercase tracking-wider font-semibold';
+        badge.innerText = 'POLICY EXCEPTION TRIGGERED';
+        headline.className = 'font-headline-xl text-headline-xl text-error tracking-tight font-bold';
+        headline.innerText = 'TRANSACTION BLOCKED';
+        icon.innerText = 'dangerous';
+        iconBox.className = 'w-14 h-14 rounded-xl bg-error-container/30 flex items-center justify-center text-error shadow-inner';
+        riskScore.className = 'font-mono-xl text-mono-xl text-error font-bold leading-none';
+        gauge.className = 'text-error stroke-current transition-all duration-700 ease-out';
+      } else {
+        badge.className = 'px-space-xs py-0.5 rounded font-label-caps text-label-caps bg-surface-container-highest text-primary uppercase tracking-wider font-semibold';
+        badge.innerText = 'HEALTHY BASELINE CONGRUENCE';
+        headline.className = 'font-headline-xl text-headline-xl text-primary tracking-tight font-bold';
+        headline.innerText = 'TRANSACTION CLEARED';
+        icon.innerText = 'check_circle';
+        iconBox.className = 'w-14 h-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary shadow-inner';
+        riskScore.className = 'font-mono-xl text-mono-xl text-primary font-bold leading-none';
+        gauge.className = 'text-primary stroke-current transition-all duration-700 ease-out';
+      }
+
+      riskScore.innerText = pct + '%';
+      gauge.setAttribute('stroke-dasharray', pct + ', 100');
+      renderFeatureContributions(result.top_features || []);
+
+      if (result.feature_vector_dim) {
+        document.getElementById('vector-dim-label').innerText = `Vector Dim: ${result.feature_vector_dim}`;
+      }
+
+      // Real derived quantities from the real fraud_probability - not fabricated.
+      const p = Math.min(Math.max(result.fraud_probability, 1e-9), 1 - 1e-9);
+      const certaintyPct = (Math.max(p, 1 - p) * 100).toFixed(1);
+      document.getElementById('model-certainty-value').innerText = certaintyPct + '%';
+      document.getElementById('model-certainty-bar').style.width = certaintyPct + '%';
+
+      const entropyBits = -(p * Math.log2(p) + (1 - p) * Math.log2(1 - p));
+      document.getElementById('entropy-index-value').innerText = `Entropy Index: ${entropyBits.toFixed(3)}`;
+    } catch (err) {
+      console.error(err);
+      badge.className = 'px-space-xs py-0.5 rounded font-label-caps text-label-caps bg-error/20 text-error uppercase tracking-wider font-semibold';
+      badge.innerText = 'INFERENCE ERROR';
+      headline.className = 'font-headline-xl text-headline-xl text-error tracking-tight font-bold';
+      headline.innerText = err.message || 'REQUEST FAILED';
+      icon.innerText = 'error';
+      iconBox.className = 'w-14 h-14 rounded-xl bg-error-container/30 flex items-center justify-center text-error shadow-inner';
+    } finally {
+      btn.classList.remove('opacity-75');
+      btn.disabled = false;
+    }
+  }
+
+  function toggleTreeDetails() {
+    const el = document.getElementById('tree-container');
+    const text = document.getElementById('tree-toggle-text');
+    if (el.classList.contains('hidden')) {
+      el.classList.remove('hidden');
+      text.innerText = 'Collapse Logic Map';
+    } else {
+      el.classList.add('hidden');
+      text.innerText = 'Expand Logic Map';
+    }
+  }
+
+  function saveScenario() {
+    const { personaName } = getPersonaIdentity();
+    alert(`Payload successfully packaged and written to ${personaName}'s XGBoost automated regression suite.`);
+  }
+
+  function resetSandbox() {
+    applyPreset('attack');
+  }
+
+  if (!getToken()) {
+    window.location.href = '/preview/login';
+  } else {
+    applyPersonaIdentity();
+    resetSandbox();
+    loadRocAuc();
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,635 @@
+{% extends "base_auth.html" %}
+
+{% block title %}Demo Persona Login — Fraudec{% endblock %}
+
+{% block content %}
+<header class="fixed top-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+<div class="h-16 w-full px-margin-desktop flex items-center justify-between">
+<div class="flex items-center gap-space-lg">
+<div class="flex items-center gap-space-sm">
+<img alt="Fraudec Logo" class="h-8 w-auto object-contain" src="{{ url_for('static', path='fraudec_logo.svg') }}" />
+<span class="font-headline-md text-headline-md tracking-tight text-primary">Fraudec</span>
+</div>
+<div class="hidden md:flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-low">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant">SYSTEM ACTIVE // ML ENGINE v4.2</span>
+</div>
+</div>
+<div class="flex items-center gap-space-lg">
+<nav class="hidden sm:flex items-center gap-space-lg" data-active-classes="text-primary font-bold">
+<a aria-current="page" class="transition-colors text-primary font-bold" data-path="demo-login" href="#">Login</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="documentation" href="#">Documentation</a>
+</nav>
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-high">
+<span class="font-mono-sm text-mono-sm text-primary">&lt;12ms XGBoost latency</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+</div>
+</div>
+</div>
+</header>
+<main class="w-full pt-16 bg-background">
+<div class="flex flex-col w-full">
+<!-- Interactive Feedback Overlay Container (Hidden until triggered) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-300" id="auth-modal">
+<div class="w-full max-w-md p-space-lg rounded-xl bg-surface-container-high shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary-container to-secondary animate-pulse"></div>
+<div class="flex items-start justify-between mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px] animate-spin">sync</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">SYNTHESIS_INIT</h4>
+<p class="font-mono-sm text-mono-sm text-on-surface-variant">MOUNTING XGBOOST MODEL</p>
+</div>
+</div>
+<span class="font-mono-sm text-mono-sm text-primary-container bg-surface-container-low px-space-xs py-0.5 rounded">200 OK</span>
+</div>
+<div class="space-y-space-sm mb-space-lg font-mono-sm text-mono-sm">
+<div class="p-space-sm rounded bg-surface-container-lowest flex justify-between items-center">
+<span class="text-on-surface-variant">ACTIVE_SESSION:</span>
+<span class="text-primary font-bold" id="modal-persona-name">--</span>
+</div>
+<div class="p-space-sm rounded bg-surface-container-lowest flex justify-between items-center">
+<span class="text-on-surface-variant">ENGINE_ID:</span>
+<span class="text-primary-container" id="modal-model-id">--</span>
+</div>
+<div class="p-space-sm rounded bg-surface-container-lowest">
+<div class="flex justify-between items-center mb-1">
+<span class="text-on-surface-variant">JWT_PAYLOAD:</span>
+<span class="text-on-surface font-semibold text-[10px]">SIGNATURE_VALID</span>
+</div>
+<div class="text-[10px] text-on-surface-variant truncate font-mono-sm">eyJhbGciOiJFRDI1NTE5IiwidHlwIjoiSldUIn0.e3VzZXJfaWQ6ICJ4Z2Jvb3N0LW...</div>
+</div>
+</div>
+<div class="flex items-center justify-between gap-space-sm">
+<button class="px-space-md py-space-xs rounded font-mono-md text-mono-md bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" id="cancel-auth-btn">
+          TERMINATE
+        </button>
+<button class="flex-1 py-space-xs px-space-md rounded font-mono-md text-mono-md bg-primary-container text-on-primary font-bold flex items-center justify-center gap-space-xs shadow-lg hover:shadow-primary-container/30 transition-all" id="launch-dash-btn">
+<span>ENTER DASHBOARD</span>
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Ambient Glow Canvas Layer -->
+<div class="relative w-full overflow-hidden pb-space-xl">
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-primary/5 rounded-full blur-[140px] pointer-events-none"></div>
+<div class="absolute top-96 -left-32 w-[400px] h-[400px] bg-secondary-container/10 rounded-full blur-[120px] pointer-events-none"></div>
+<!-- Header / Hero Segment -->
+<div class="w-full px-margin-desktop pt-space-xl pb-space-lg flex flex-col items-center text-center relative z-10">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container-low mb-space-md shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-widest">BEHAVIORAL TELEMETRY // SYNTHETIC MODEL PROVISIONING</span>
+</div>
+<h1 class="font-display-lg text-display-lg max-w-4xl tracking-tight text-on-surface mb-space-md">
+        Select a Demo Persona to Test <span class="text-primary-container">Hyper-Personalized</span> ML Fraud Detection
+      </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl leading-relaxed mb-space-xl">
+        Every individual has an unmistakable behavioral footprint. Select a synthetic persona below to mount their dedicated XGBoost model, initialize custom risk baselines, and stream their transaction telemetry.
+      </p>
+<!-- Global Telemetry Bar -->
+<div class="w-full max-w-6xl grid grid-cols-2 lg:grid-cols-4 gap-space-sm p-space-sm rounded-xl bg-surface-container-low backdrop-blur-md shadow-lg">
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-md bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-mono-lg text-mono-lg text-on-surface">10</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Synthetic Personas Online</span>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-md bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">security</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-mono-lg text-mono-lg text-on-surface">100%</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Behavioral Isolation</span>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-md bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">precision_manufacturing</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-mono-lg text-mono-lg text-on-surface">0.04%</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Baseline False Positive</span>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-md bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">key</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-mono-lg text-mono-lg text-primary-container">ACTIVE</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">JWT Auto-Provisioning</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Persona Grid (10 Distinct Cards) -->
+<div class="w-full px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-md max-w-[1600px] mx-auto">
+<!-- User 01: College Student -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-[24px]">school</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_01</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_01_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">College Student</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">Sub-50 Velocity Index</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-secondary font-semibold">LOW (0.18)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[18%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">High Frequency</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Micro-Transactions</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Campus Radius</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              Frequent coffee shops, bookstore micro-charges, late-night food deliveries, strict sub-$50 typical velocity.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_01_v2_xgboost" data-user-id="user_01" data-persona="College Student">
+<span>Log in as Student</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- User 02: Chief Trauma Surgeon -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-primary-container shadow-inner">
+<span class="material-symbols-outlined text-[24px]">medical_services</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_02</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_02_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Trauma Surgeon</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">Circadian Shift Pattern</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-primary-container font-semibold">MED (0.54)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[54%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">High Value</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Irregular Hours</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Intl Conferences</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              Large medical equipment orders, premium travel, unpredictable 3 AM hospital cafeteria charges.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_02_v2_xgboost" data-user-id="user_02" data-persona="Chief Trauma Surgeon">
+<span>Log in as Surgeon</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- User 03: Digital Nomad Freelancer -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary shadow-inner">
+<span class="material-symbols-outlined text-[24px]">public</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_03</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_03_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Digital Nomad</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">Global Roaming Nodes</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-primary-container font-semibold">HIGH (0.76)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[76%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Multi-Currency</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Roaming IP</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Co-working</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              Frequent cross-border SaaS billing, fluctuating GPS coordinates, high crypto on-ramp activity.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_03_v2_xgboost" data-user-id="user_03" data-persona="Digital Nomad Freelancer">
+<span>Log in as Nomad</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- User 04: Retired Pensioner -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-[24px]">home_pin</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_04</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_04_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Retired Pensioner</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">Static Local Baseline</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-secondary font-semibold">MINIMAL (0.05)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[5%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Predictable</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">In-Person POS</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Zero Crypto</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              Fixed bi-weekly grocery runs, utility bill autopay, zero international or peer-to-peer transfers.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_04_v2_xgboost" data-user-id="user_04" data-persona="Retired Pensioner">
+<span>Log in as Pensioner</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- User 05: High-Frequency Day Trader -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-primary-container shadow-inner">
+<span class="material-symbols-outlined text-[24px]">candlestick_chart</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_05</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_05_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Day Trader</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">Microsecond Liquidity</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-primary-container font-semibold">HIGH (0.89)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[89%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Rapid Transfers</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">API Driven</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">High Volatility</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              Large wire transfers to brokerage accounts, multiple desktop sessions, strict hardware 2FA pattern.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_05_v2_xgboost" data-user-id="user_05" data-persona="High-Frequency Day Trader">
+<span>Log in as Trader</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- User 06: Long-Haul Logistics Driver -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary shadow-inner">
+<span class="material-symbols-outlined text-[24px]">local_shipping</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_06</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_06_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Logistics Driver</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">Linear Corridor Traversal</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-secondary font-semibold">MED (0.42)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[42%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Interstate Nodes</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Diesel / Lodging</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">High Velocity</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              Linear geographic traversal, interstate fuel stations, commercial truck stop lodging.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_06_v2_xgboost" data-user-id="user_06" data-persona="Logistics Driver">
+<span>Log in as Driver</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- User 07: Tech Startup CEO -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-primary-container shadow-inner">
+<span class="material-symbols-outlined text-[24px]">corporate_fare</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_07</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_07_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Startup CEO</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">High-Limit SaaS Matrix</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-primary-container font-semibold">MED (0.61)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[61%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Exec Expense</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">SaaS Billing</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Global Flights</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              High limit corporate cards, cloud infrastructure billing, premium hotel booking patterns.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_07_v2_xgboost" data-user-id="user_07" data-persona="Tech Startup CEO">
+<span>Log in as CEO</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- User 08: Luxury Goods Collector -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-[24px]">diamond</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_08</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_08_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Luxury Collector</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">Spike Value Escrow</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-primary font-semibold">HIGH (0.84)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[84%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Ultra-High Ticket</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Escrow Auctions</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Boutique</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              Infrequent multi-thousand dollar transactions, verified auction houses, boutique jewelers.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_08_v2_xgboost" data-user-id="user_08" data-persona="Luxury Goods Collector">
+<span>Log in as Collector</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- User 09: E-Commerce Drop-shipper -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-primary-container shadow-inner">
+<span class="material-symbols-outlined text-[24px]">inventory_2</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_09</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_09_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">E-Com Merchant</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">Cross-Border Supplier Stream</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-primary-container font-semibold">HIGH (0.79)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[79%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Wholesaler</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Shenzhen Wire</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Chargeback Buf</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              High daily transaction volume, overseas manufacturer payouts (Shenzhen, Vietnam), high chargeback buffer.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_09_v2_xgboost" data-user-id="user_09" data-persona="E-Commerce Drop-shipper">
+<span>Log in as Merchant</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- User 10: Nightlife Promoter & Host -->
+<div class="group relative rounded-xl bg-surface-container/70 backdrop-blur-xl p-space-md flex flex-col justify-between transition-all duration-300 hover:bg-surface-container-high hover:shadow-[0_0_24px_-4px_rgba(0,240,255,0.25)] hover:-translate-y-1">
+<div>
+<div class="flex items-start justify-between mb-space-sm">
+<div class="w-11 h-11 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary shadow-inner">
+<span class="material-symbols-outlined text-[24px]">nightlife</span>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-primary-container block">USER_10</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">user_10_v2_xgboost</span>
+</div>
+</div>
+<div class="mb-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Nightlife Host</h3>
+<p class="font-mono-sm text-mono-sm text-secondary-fixed">Nocturnal P2P Cluster</p>
+</div>
+<!-- Risk Profile Meter -->
+<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
+<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
+<span class="text-on-surface-variant">VOLATILITY</span>
+<span class="text-secondary font-semibold">HIGH (0.88)</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[88%]"></div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mb-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">10PM - 5AM Peak</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">P2P Split</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Venue Escrow</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+              90% transaction volume between 10 PM - 5 AM, venue reservation fees, rapid mobile P2P splitting.
+            </p>
+</div>
+<button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_10_v2_xgboost" data-user-id="user_10" data-persona="Nightlife Promoter &amp; Host">
+<span>Log in as Host</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Diagnostic Footnote Panel -->
+<div class="w-full px-margin-desktop mt-space-xl">
+<div class="max-w-6xl mx-auto p-space-md rounded-xl bg-surface-container-low/50 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container text-[20px]">terminal</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">
+            DEMO MODE ENABLED // All models pre-trained on 14.8M synthetic ISO 20022 transactional vectors.
+          </span>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="font-mono-sm text-mono-sm text-primary">ED25519 CIPHERTEXT READY</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="w-full bg-surface-container-lowest py-space-lg">
+<div class="w-full px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant">
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant">© 2025 FRAUDEC CYBERNETICS // REAL-TIME RISK INTELLIGENCE</span>
+<div class="flex items-center gap-space-md font-mono-sm text-mono-sm">
+<span>CORE v4.2.9</span>
+<span class="text-primary">CLUSTER HEALTH: OPTIMAL</span>
+</div>
+</div>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function() {
+      const modal = document.getElementById('auth-modal');
+      const nameElem = document.getElementById('modal-persona-name');
+      const modelElem = document.getElementById('modal-model-id');
+      const cancelBtn = document.getElementById('cancel-auth-btn');
+      const launchBtn = document.getElementById('launch-dash-btn');
+      let pendingPersona = null;
+      let pendingUserId = null;
+
+      document.querySelectorAll('.persona-auth-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          pendingPersona = btn.getAttribute('data-persona');
+          pendingUserId = btn.getAttribute('data-user-id');
+
+          nameElem.textContent = pendingPersona;
+          modelElem.textContent = btn.getAttribute('data-model');
+
+          modal.classList.remove('opacity-0', 'pointer-events-none');
+          modal.classList.add('opacity-100', 'pointer-events-auto');
+        });
+      });
+
+      cancelBtn.addEventListener('click', () => {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.classList.remove('opacity-100', 'pointer-events-auto');
+      });
+
+      launchBtn.addEventListener('click', async () => {
+        if (!pendingUserId) return;
+
+        launchBtn.disabled = true;
+        launchBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">sync</span> PROVISIONING...';
+
+        try {
+          const res = await fetch('/api/auth/demo-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ persona_name: pendingPersona, user_id: pendingUserId }),
+          });
+          if (!res.ok) throw new Error('demo-login failed: ' + res.status);
+
+          const data = await res.json();
+          localStorage.setItem('fraudec_token', data.access_token);
+          localStorage.setItem('fraudec_user_id', pendingUserId);
+          localStorage.setItem('fraudec_persona_name', pendingPersona);
+
+          window.location.href = '/preview/manual-predict';
+        } catch (err) {
+          console.error(err);
+          launchBtn.innerHTML = '<span>LOGIN FAILED - RETRY</span>';
+          launchBtn.disabled = false;
+        }
+      });
+    })();
+  </script>
+{% endblock %}

@@ -1,4 +1,5 @@
 fastapi
+python-dotenv
 uvicorn[standard]
 sqlalchemy
 bcrypt
@@ -6,3 +7,8 @@ python-jose[cryptography]
 python-multipart
 pydantic[email]
 pandas
+joblib
+scikit-learn
+xgboost
+shap
+jinja2

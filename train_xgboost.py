@@ -238,7 +238,7 @@ def generate_comparison(xgb_results):
     print("\nComparison saved to results/xgboost_vs_random_forest_comparison.csv")
 
 if __name__ == "__main__":
-    users = [f"user_{str(i).zfill(2)}" for i in range(3, 11)]
+    users = [f"user_{str(i).zfill(2)}" for i in range(1, 11)]
     all_xgb_results = []
     all_best_params = []
     all_best_iterations = []
@@ -261,8 +261,8 @@ if __name__ == "__main__":
     generate_comparison(all_xgb_results)
     
     # Save results and best hyperparameters to a text file
-    with open('results/xgboost_users_03_to_10_summary.txt', 'w') as f:
-        f.write("XGBoost Results and Best Hyperparameters for Users 03-10\n")
+    with open('results/xgboost_all_users_summary.txt', 'w') as f:
+        f.write("XGBoost Results and Best Hyperparameters for All Users (01-10)\n")
         f.write("="*60 + "\n\n")
         for res, params, iteration in zip(all_xgb_results, all_best_params, all_best_iterations):
             f.write(f"--- {res['user_id']} ---\n")
@@ -276,5 +276,5 @@ if __name__ == "__main__":
                 f.write(f"  {k}: {v}\n")
             f.write(f"  best_iteration (early stopping): {iteration}\n\n")
         f.write("End of Summary.\n")
-        print("\nSaved summary to results/xgboost_users_03_to_10_summary.txt")
+        print("\nSaved summary to results/xgboost_all_users_summary.txt")
 

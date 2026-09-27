@@ -1,0 +1,553 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics — Fraudec{% endblock %}
+
+{% block content %}
+<!-- Top Ambient Glow Aura (Contained) -->
+<div class="relative w-full h-0 pointer-events-none overflow-visible">
+<div class="absolute -top-12 left-1/4 w-96 h-44 bg-surface-tint/10 rounded-full blur-3xl"></div>
+<div class="absolute -top-16 right-1/4 w-80 h-36 bg-secondary-container/15 rounded-full blur-3xl"></div>
+</div>
+<!-- Header Section with Persona & Granular Range Selector -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md pt-space-md mb-space-lg">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-caps text-label-caps text-primary uppercase">Persona Profile</span>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant" id="node-id-label">NODE // UID-–</span>
+<span class="font-mono-sm text-mono-sm text-outline">•</span>
+<span class="font-mono-sm text-mono-sm text-secondary" id="persona-title-label">–</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Behavioral Analytics &amp; XGBoost Health</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+        Comprehensive historical evaluation, telemetry trends, and accuracy metrics calibrated for <span id="persona-hero-label">this persona</span>. Real-time model convergence verified against this persona's own real behavioral baseline.
+      </p>
+</div>
+<!-- Time Range Filter Pills -->
+<div class="flex items-center p-1 rounded-xl bg-surface-container-lowest shadow-md self-start lg:self-end">
+<button class="time-tab px-3 py-1.5 rounded-lg font-mono-sm text-mono-sm text-on-surface-variant hover:text-on-surface transition-colors" data-range="24h">
+        24 Hours
+      </button>
+<button class="time-tab px-3 py-1.5 rounded-lg font-mono-sm text-mono-sm text-on-surface-variant hover:text-on-surface transition-colors" data-range="7d">
+        7 Days
+      </button>
+<button class="time-tab active px-3.5 py-1.5 rounded-lg font-mono-sm text-mono-sm text-on-primary bg-primary-container shadow-sm font-semibold transition-all" data-range="30d">
+        30 Days (Active)
+      </button>
+<button class="time-tab px-3 py-1.5 rounded-lg font-mono-sm text-mono-sm text-on-surface-variant hover:text-on-surface transition-colors" data-range="all">
+        All-Time
+      </button>
+</div>
+</div>
+<!-- KPI Metric Cards: Top Row (4 Columns) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md mb-space-lg">
+<!-- Card 1: Total Transactions Evaluated -->
+<div class="group relative overflow-hidden rounded-xl bg-surface-container p-space-md shadow-md transition-all duration-300 hover:shadow-xl hover:translate-y-[-2px]">
+<div class="absolute inset-0 bg-gradient-to-br from-primary-container/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start justify-between mb-space-sm relative z-10">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Total Transactions</span>
+<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+</div>
+</div>
+<div class="flex items-baseline gap-space-sm relative z-10">
+<span class="font-mono-xl text-mono-xl text-on-surface tracking-tight" id="kpi-total-tx">0</span>
+</div>
+<div class="mt-space-sm flex items-end justify-between pt-space-xs relative z-10">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Logged via /api/predict + replay</span>
+</div>
+</div>
+<!-- Card 2: Total Fraud Prevented -->
+<div class="group relative overflow-hidden rounded-xl bg-surface-container p-space-md shadow-md transition-all duration-300 hover:shadow-xl hover:translate-y-[-2px]">
+<div class="absolute inset-0 bg-gradient-to-br from-error/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start justify-between mb-space-sm relative z-10">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Fraud Capital Intercepted</span>
+<span class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-error font-label-caps text-label-caps">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+<span id="kpi-intercept-count">0</span>&nbsp;INTERCEPTS
+        </span>
+</div>
+<div class="flex items-baseline gap-space-sm relative z-10">
+<span class="font-mono-xl text-mono-xl text-on-surface tracking-tight" id="kpi-blocked-amount">$0.00</span>
+</div>
+<div class="mt-space-sm flex items-end justify-between pt-space-xs relative z-10">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sum of RF-blocked transaction amounts</span>
+</div>
+</div>
+<!-- Card 3: False Positive Rate -->
+<div class="group relative overflow-hidden rounded-xl bg-surface-container p-space-md shadow-md transition-all duration-300 hover:shadow-xl hover:translate-y-[-2px]">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start justify-between mb-space-sm relative z-10">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">False Positive Rate</span>
+<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+</div>
+</div>
+<div class="flex items-baseline gap-space-sm relative z-10">
+<span class="font-mono-xl text-mono-xl text-on-surface tracking-tight" id="kpi-fpr">–</span>
+<span class="font-mono-sm text-mono-sm text-primary bg-surface-container-highest px-1.5 py-0.5 rounded">
+          Goal: &lt;0.10%
+        </span>
+</div>
+<div class="mt-space-sm flex items-center justify-between pt-space-xs relative z-10">
+<span class="font-body-sm text-body-sm text-on-surface-variant" id="kpi-fpr-caption">No replayed history with known labels yet</span>
+<div class="flex items-center gap-1 text-primary font-mono-sm text-mono-sm" id="kpi-fpr-badge">
+<span class="material-symbols-outlined text-[16px]">hourglass_empty</span>PENDING
+        </div>
+</div>
+</div>
+<!-- Card 4: Model Accuracy & ROC-AUC -->
+<div class="group relative overflow-hidden rounded-xl bg-surface-container p-space-md shadow-md transition-all duration-300 hover:shadow-xl hover:translate-y-[-2px]">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start justify-between mb-space-sm relative z-10">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Model Accuracy &amp; ROC-AUC</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-mono-sm text-mono-sm text-primary">
+          XGBoost-v2
+        </span>
+</div>
+<div class="flex items-baseline gap-space-sm relative z-10">
+<span class="font-mono-xl text-mono-xl text-on-surface tracking-tight" id="kpi-rocauc">–</span>
+<span class="font-label-caps text-label-caps text-primary uppercase">AUC RANK</span>
+</div>
+<div class="mt-space-sm flex items-center justify-between pt-space-xs relative z-10">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Held-out test set</span>
+<div class="w-16 h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" id="kpi-rocauc-bar" style="width: 0%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Middle Grid: Main Volume Area/Bar Chart + Category Radial Breakdown -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg mb-space-lg">
+<!-- Left Main Chart: Volume & Anomaly Over Time (8 Cols) -->
+<div class="lg:col-span-8 rounded-xl bg-surface-container p-space-lg shadow-md flex flex-col justify-between">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-md">
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-md text-headline-md text-on-surface">Transaction Risk Timeline</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-mono-sm text-mono-sm">Real logged predictions, oldest to newest</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Each bar is one real /api/predict or replay call - height is the real fraud_probability, color is the real decision.
+          </p>
+</div>
+<!-- Legend Chips -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-primary-container"></span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Cleared</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-error"></span>
+<span class="font-mono-sm text-mono-sm text-error">Blocked</span>
+</div>
+</div>
+</div>
+<!-- Real per-row bar chart, built at runtime from /api/analytics timeline -->
+<div class="relative w-full h-72 sm:h-80 bg-surface-container-lowest rounded-lg p-space-md flex flex-col justify-between overflow-hidden">
+<!-- Background Grid Ticks -->
+<div class="absolute inset-0 flex flex-col justify-between p-space-md opacity-20 pointer-events-none">
+<div class="w-full h-px bg-on-surface-variant"></div>
+<div class="w-full h-px bg-on-surface-variant"></div>
+<div class="w-full h-px bg-on-surface-variant"></div>
+<div class="w-full h-px bg-on-surface-variant"></div>
+<div class="w-full h-px bg-on-surface-variant"></div>
+</div>
+<div class="relative z-10 w-full h-full flex items-end gap-0.5 hidden" id="timeline-chart"></div>
+<span class="relative z-10 font-mono-sm text-mono-sm text-on-surface-variant" id="timeline-empty">No predictions logged for this persona yet in this window.</span>
+<div class="relative z-10 flex justify-between pt-2 border-t border-surface-variant/40 font-mono-sm text-mono-sm text-on-surface-variant">
+<span id="timeline-x-start">–</span>
+<span class="text-error font-semibold">0.65 cutoff</span>
+<span id="timeline-x-end">–</span>
+</div>
+</div>
+<!-- Sub-metric footer -->
+<div class="grid grid-cols-3 gap-space-sm mt-space-md pt-space-sm border-t border-surface-container-high">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Peak Hourly Volume</span>
+<p class="font-mono-md text-mono-md text-on-surface mt-0.5" id="submetric-peak-hourly">0 tx</p>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Blocked Share</span>
+<p class="font-mono-md text-mono-md text-primary mt-0.5" id="submetric-blocked-share">0.00%</p>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Source Mix</span>
+<p class="font-mono-md text-mono-md text-on-surface mt-0.5" id="submetric-source-mix">0 replay / 0 manual</p>
+</div>
+</div>
+</div>
+<!-- Right Chart: Spending Category vs Anomaly Frequency (4 Cols) -->
+<div class="lg:col-span-4 rounded-xl bg-surface-container p-space-lg shadow-md flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<h2 class="font-headline-md text-headline-md text-on-surface">Category Profile</h2>
+<span class="material-symbols-outlined text-primary-container text-[20px]">donut_small</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+          Real merchant_category share of this persona's logged predictions, with real per-category block rate.
+        </p>
+<!-- Donut SVG Visualization - built at runtime from real category_breakdown -->
+<div class="relative w-48 h-48 mx-auto my-space-sm flex items-center justify-center">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="38" stroke="#262a34" stroke-width="12"></circle>
+<g id="category-donut-arcs"></g>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Top Category</span>
+<span class="font-mono-md text-mono-md text-on-surface font-semibold" id="category-donut-top-name">–</span>
+<span class="font-mono-sm text-mono-sm text-primary" id="category-donut-top-share">–</span>
+</div>
+</div>
+<!-- Category Legend Breakdown Table - built at runtime -->
+<div class="flex flex-col gap-space-xs mt-space-sm" id="category-legend-list"></div>
+</div>
+<div class="mt-space-md p-space-sm rounded-lg bg-surface-container-lowest flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Auto-Policy Quarantine</span>
+<span class="font-mono-sm text-mono-sm text-primary">STRICT CONVERGENCE</span>
+</div>
+</div>
+</div>
+<!-- Bottom Grid: Feature Importance Ranking + Blocked Incident Log -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Left Bottom: Feature Importance (5 Cols) -->
+<div class="lg:col-span-5 rounded-xl bg-surface-container p-space-lg shadow-md flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">psychology</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Feature Importance</h2>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">SHAP RANKING</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+          Top 6 features by the XGBoost model's real global feature_importances_ for this persona's model.
+        </p>
+<!-- Ranked Bar List - built at runtime from real feature_importances -->
+<div class="flex flex-col gap-space-md" id="feature-importance-list"></div>
+</div>
+<div class="mt-space-md p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Model Artifact Last Modified</span>
+<span class="font-mono-sm text-mono-sm text-primary" id="model-last-modified">–</span>
+</div>
+</div>
+<!-- Right Bottom: Recent Blocked Incident Log Table (7 Cols) -->
+<div class="lg:col-span-7 rounded-xl bg-surface-container p-space-lg shadow-md flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-error text-[20px]">manage_accounts</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Recent Intercepted Threat Log</h2>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-error font-label-caps text-label-caps">
+            AUTOMATIC DRILL-DOWN
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md" id="blocked-log-caption">
+          Most recent XGBoost-blocked predictions logged for this persona (manual sandbox + replayed history).
+        </p>
+<!-- Table Container -->
+<div class="overflow-x-auto rounded-lg bg-surface-container-lowest">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-surface-variant/40 bg-surface-container-low">
+<th class="py-2.5 px-space-sm font-label-caps text-label-caps text-on-surface-variant uppercase">Timestamp</th>
+<th class="py-2.5 px-space-sm font-label-caps text-label-caps text-on-surface-variant uppercase">Merchant / Category</th>
+<th class="py-2.5 px-space-sm font-label-caps text-label-caps text-on-surface-variant uppercase text-right">Amount</th>
+<th class="py-2.5 px-space-sm font-label-caps text-label-caps text-on-surface-variant uppercase">Device / Location</th>
+<th class="py-2.5 px-space-sm font-label-caps text-label-caps text-on-surface-variant uppercase">Top SHAP Feature</th>
+<th class="py-2.5 px-space-sm font-label-caps text-label-caps text-on-surface-variant uppercase text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant/20 font-mono-sm text-mono-sm" id="blocked-log-body">
+<tr><td class="py-3 px-space-sm text-on-surface-variant" colspan="6">No blocked predictions logged for this persona yet.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Action & Verification Bar -->
+<div class="mt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-sm pt-space-sm border-t border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Real /api/analytics data - not a live SMS/biometric integration.</span>
+</div>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-mono-sm text-mono-sm flex items-center gap-1.5 transition-colors" id="export-audit-btn">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+          Export Audit Trail (CSV)
+        </button>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function getToken() {
+    return localStorage.getItem('fraudec_token');
+  }
+
+  if (!getToken()) {
+    window.location.href = '/preview/login';
+  }
+
+  // Real per-persona identity from localStorage (set at login) - replaces the
+  // hardcoded "Dr. Sarah Chen" copy that used to show for every persona.
+  function applyPersonaIdentity() {
+    const userId = localStorage.getItem('fraudec_user_id') || '';
+    const personaName = localStorage.getItem('fraudec_persona_name') || 'Unknown persona';
+    const userNum = userId.replace(/^user_/, '');
+
+    const nodeIdEl = document.getElementById('node-id-label');
+    if (nodeIdEl) nodeIdEl.innerText = `NODE // UID-${userNum || '–'}`;
+
+    const titleEl = document.getElementById('persona-title-label');
+    if (titleEl) titleEl.innerText = personaName;
+
+    const heroEl = document.getElementById('persona-hero-label');
+    if (heroEl) heroEl.innerText = `Persona #${userNum} (${personaName})`;
+  }
+  applyPersonaIdentity();
+
+  const RANGE_DAYS = { '24h': 1, '7d': 7, '30d': 30, 'all': null };
+  const DONUT_PALETTE = ['#00dbe9', '#0566d9', '#adc6ff', '#6d3bd7', '#3b494b', '#e1d2ff', '#849495'];
+  let lastAnalytics = null;
+
+  async function authedFetch(url, options = {}) {
+    const token = getToken();
+    const res = await fetch(url, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, ...(options.headers || {}) },
+    });
+    if (res.status === 401) {
+      window.location.href = '/preview/login';
+      throw new Error('Unauthorized');
+    }
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.detail || ('Request failed: ' + res.status));
+    }
+    return res.json();
+  }
+
+  function prettifyFeatureName(name) {
+    return name.replace(/^(num__|cat__)/, '').replace(/_/g, ' ');
+  }
+
+  function formatMoney(v) {
+    return '$' + Number(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function formatTimestamp(iso) {
+    if (!iso) return '–';
+    const d = new Date(iso);
+    return d.toLocaleString(undefined, { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function renderKpis(data, rocAuc) {
+    const t = data.totals;
+    document.getElementById('kpi-total-tx').textContent = t.total_transactions.toLocaleString();
+
+    document.getElementById('kpi-intercept-count').textContent = t.blocked_count.toLocaleString();
+    document.getElementById('kpi-blocked-amount').textContent = formatMoney(t.blocked_amount_sum);
+
+    const fprEl = document.getElementById('kpi-fpr');
+    const fprCaption = document.getElementById('kpi-fpr-caption');
+    const fprBadge = document.getElementById('kpi-fpr-badge');
+    if (t.false_positive_rate === null) {
+      fprEl.textContent = '–';
+      fprCaption.textContent = 'No replayed history with known labels yet';
+      fprBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">hourglass_empty</span>PENDING';
+    } else {
+      const pct = t.false_positive_rate * 100;
+      fprEl.textContent = pct.toFixed(2) + '%';
+      fprCaption.textContent = `Based on ${t.false_positive_eligible_count} replayed txns with known-legitimate ground truth`;
+      if (pct < 0.10) {
+        fprBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">check_circle</span>OPTIMAL';
+      } else {
+        fprBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">warning</span>REVIEW';
+      }
+    }
+
+    if (rocAuc !== null) {
+      document.getElementById('kpi-rocauc').textContent = Number(rocAuc).toFixed(4);
+      document.getElementById('kpi-rocauc-bar').style.width = (rocAuc * 100).toFixed(1) + '%';
+    }
+  }
+
+  function renderTimeline(data) {
+    const chart = document.getElementById('timeline-chart');
+    const empty = document.getElementById('timeline-empty');
+    const points = data.timeline;
+
+    if (!points.length) {
+      chart.classList.add('hidden');
+      empty.classList.remove('hidden');
+      document.getElementById('timeline-x-start').textContent = '–';
+      document.getElementById('timeline-x-end').textContent = '–';
+      document.getElementById('submetric-peak-hourly').textContent = '0 tx';
+      document.getElementById('submetric-blocked-share').textContent = '0.00%';
+      document.getElementById('submetric-source-mix').textContent = '0 replay / 0 manual';
+      return;
+    }
+
+    chart.classList.remove('hidden');
+    empty.classList.add('hidden');
+    chart.innerHTML = points.map(p => {
+      const heightPct = Math.max(2, p.fraud_probability * 100);
+      const colorClass = p.prediction === 1 ? 'bg-error' : 'bg-primary-container';
+      const title = `TX-${p.id} • ${formatMoney(p.transaction_amount)} • ${(p.fraud_probability * 100).toFixed(1)}% • ${formatTimestamp(p.created_at)}`;
+      return `<div class="flex-1 ${colorClass} rounded-t transition-all hover:opacity-80" style="height: ${heightPct}%;" title="${title}"></div>`;
+    }).join('');
+
+    document.getElementById('timeline-x-start').textContent = formatTimestamp(points[0].created_at);
+    document.getElementById('timeline-x-end').textContent = formatTimestamp(points[points.length - 1].created_at);
+
+    document.getElementById('submetric-peak-hourly').textContent = data.totals.peak_hourly_count.toLocaleString() + ' tx';
+    const blockedShare = data.totals.total_transactions
+      ? (data.totals.blocked_count / data.totals.total_transactions) * 100
+      : 0;
+    document.getElementById('submetric-blocked-share').textContent = blockedShare.toFixed(2) + '%';
+    document.getElementById('submetric-source-mix').textContent =
+      `${data.totals.source_mix.replay} replay / ${data.totals.source_mix.manual} manual`;
+  }
+
+  function renderCategoryDonut(data) {
+    const breakdown = data.category_breakdown;
+    const arcsGroup = document.getElementById('category-donut-arcs');
+    const legendList = document.getElementById('category-legend-list');
+    const circumference = 238.76;
+
+    if (!breakdown.length) {
+      arcsGroup.innerHTML = '';
+      legendList.innerHTML = '<span class="font-body-sm text-body-sm text-on-surface-variant">No categories logged yet.</span>';
+      document.getElementById('category-donut-top-name').textContent = '–';
+      document.getElementById('category-donut-top-share').textContent = '–';
+      return;
+    }
+
+    let cumulative = 0;
+    arcsGroup.innerHTML = breakdown.map((c, i) => {
+      const dash = c.share * circumference;
+      const offset = -cumulative;
+      cumulative += dash;
+      const color = DONUT_PALETTE[i % DONUT_PALETTE.length];
+      return `<circle cx="50" cy="50" fill="none" r="38" stroke="${color}" stroke-dasharray="${dash.toFixed(2)} ${circumference}" stroke-dashoffset="${offset.toFixed(2)}" stroke-width="12"></circle>`;
+    }).join('');
+
+    document.getElementById('category-donut-top-name').textContent = breakdown[0].category;
+    document.getElementById('category-donut-top-share').textContent = (breakdown[0].share * 100).toFixed(0) + '%';
+
+    legendList.innerHTML = breakdown.map((c, i) => {
+      const color = DONUT_PALETTE[i % DONUT_PALETTE.length];
+      const riskClass = c.block_rate > 0 ? 'bg-error-container/30' : 'bg-surface-container-high/60';
+      const riskBadgeClass = c.block_rate > 0 ? 'text-error bg-error-container' : 'text-primary bg-primary/10';
+      return `
+        <div class="flex items-center justify-between p-2 rounded-lg ${riskClass}">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full" style="background-color:${color}"></span>
+            <span class="font-body-sm text-body-sm text-on-surface">${c.category}</span>
+          </div>
+          <div class="flex items-center gap-space-sm font-mono-sm text-mono-sm">
+            <span class="text-on-surface font-medium">${(c.share * 100).toFixed(0)}%</span>
+            <span class="text-[10px] px-1 py-0.5 rounded ${riskBadgeClass}">${(c.block_rate * 100).toFixed(1)}% Blocked</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderFeatureImportance(data) {
+    const list = document.getElementById('feature-importance-list');
+    list.innerHTML = data.feature_importances.map((f, i) => `
+      <div class="flex flex-col gap-1">
+        <div class="flex justify-between items-center font-mono-sm text-mono-sm">
+          <span class="${i === 0 ? 'text-primary' : 'text-on-surface'} font-medium">${i + 1}. ${prettifyFeatureName(f.feature)}</span>
+          <span class="text-on-surface font-semibold">${(f.share * 100).toFixed(0)}% Impact</span>
+        </div>
+        <div class="w-full h-2 rounded bg-surface-container-highest overflow-hidden">
+          <div class="h-full bg-primary-container rounded" style="width: ${(f.share * 100).toFixed(1)}%"></div>
+        </div>
+      </div>`).join('');
+
+    const modLabel = document.getElementById('model-last-modified');
+    modLabel.textContent = data.model_last_modified ? formatTimestamp(data.model_last_modified) : 'unknown';
+  }
+
+  function renderBlockedLog(data) {
+    const body = document.getElementById('blocked-log-body');
+    const rows = data.recent_blocked;
+    if (!rows.length) {
+      body.innerHTML = '<tr><td class="py-3 px-space-sm text-on-surface-variant" colspan="6">No blocked predictions logged for this persona yet.</td></tr>';
+      return;
+    }
+    body.innerHTML = rows.map(r => {
+      const topFeature = (r.top_features && r.top_features[0]) ? prettifyFeatureName(r.top_features[0].feature) : '–';
+      return `
+        <tr class="hover:bg-surface-container-high/40 transition-colors">
+          <td class="py-3 px-space-sm text-on-surface-variant">${formatTimestamp(r.created_at)}</td>
+          <td class="py-3 px-space-sm font-body-sm text-body-sm text-on-surface font-medium">${r.merchant_category} • ${r.merchant_id}</td>
+          <td class="py-3 px-space-sm text-error font-semibold text-right">${formatMoney(r.transaction_amount)}</td>
+          <td class="py-3 px-space-sm text-on-surface">${r.device_id} • ${r.city}</td>
+          <td class="py-3 px-space-sm"><span class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-mono-sm text-mono-sm">${topFeature}</span></td>
+          <td class="py-3 px-space-sm text-right"><span class="inline-flex items-center gap-1 text-error"><span class="w-1.5 h-1.5 rounded-full bg-error"></span>Blocked</span></td>
+        </tr>`;
+    }).join('');
+  }
+
+  function renderAll(data, rocAuc) {
+    lastAnalytics = data;
+    renderKpis(data, rocAuc);
+    renderTimeline(data);
+    renderCategoryDonut(data);
+    renderFeatureImportance(data);
+    renderBlockedLog(data);
+  }
+
+  async function loadAnalytics(days) {
+    try {
+      const url = '/api/analytics' + (days ? ('?days=' + days) : '');
+      const [analytics, metrics] = await Promise.all([
+        authedFetch(url),
+        authedFetch('/api/metrics'),
+      ]);
+      renderAll(analytics, metrics && metrics.test_roc_auc ? metrics.test_roc_auc : null);
+    } catch (err) {
+      console.error('Failed to load analytics', err);
+    }
+  }
+
+  document.querySelectorAll('.time-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.time-tab').forEach(b => {
+        b.classList.remove('active', 'bg-primary-container', 'text-on-primary', 'font-semibold');
+        b.classList.add('text-on-surface-variant');
+      });
+      btn.classList.add('active', 'bg-primary-container', 'text-on-primary', 'font-semibold');
+      btn.classList.remove('text-on-surface-variant');
+
+      loadAnalytics(RANGE_DAYS[btn.getAttribute('data-range')]);
+    });
+  });
+
+  document.getElementById('export-audit-btn').addEventListener('click', () => {
+    if (!lastAnalytics || !lastAnalytics.recent_blocked.length) return;
+    const rows = lastAnalytics.recent_blocked;
+    const header = 'id,created_at,merchant_category,merchant_id,transaction_amount,device_id,city,fraud_probability,prediction\n';
+    const csv = header + rows.map(r =>
+      [r.id, r.created_at, r.merchant_category, r.merchant_id, r.transaction_amount, r.device_id, r.city, r.fraud_probability, r.prediction].join(',')
+    ).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'fraudec_audit_trail.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  loadAnalytics(RANGE_DAYS['30d']);
+</script>
+{% endblock %}

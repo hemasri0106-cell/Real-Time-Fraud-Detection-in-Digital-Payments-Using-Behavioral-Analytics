@@ -172,8 +172,7 @@ def preprocess_and_train(df, user_id):
         X_test.loc[:, col] = X_test[col].astype(int)
 
     numeric_features = X_train.select_dtypes(include=['int64', 'float64', 'int32', 'float32']).columns.tolist()
-    # explicitly include str per the pandas 3 deprecation warning we saw earlier
-    categorical_features = X_train.select_dtypes(include=['object', 'category', 'str']).columns.tolist()
+    categorical_features = X_train.select_dtypes(include=['object', 'category']).columns.tolist()
 
     numeric_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='mean')),
