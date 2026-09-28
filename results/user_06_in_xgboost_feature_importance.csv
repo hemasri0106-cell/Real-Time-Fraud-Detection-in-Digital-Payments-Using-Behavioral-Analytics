@@ -1,21 +1,21 @@
 feature,importance
-cat__device_id_DEV-06-1,0.278076
-num__merchant_visit_frequency,0.10328659
-cat__payment_method_Card,0.08605507
-cat__merchant_category_ATM Withdrawal,0.06830585
-num__distance_from_last_transaction_km,0.061482787
-cat__device_type_Web,0.05868773
-cat__city_Delhi,0.055479452
-cat__merchant_category_Grocery,0.050601628
-cat__merchant_category_Medical,0.049649592
-cat__merchant_category_Dining,0.04287515
-cat__payment_method_UPI,0.042731997
-num__location_visit_frequency,0.03357168
-num__new_location,0.030342571
-num__device_usage_frequency,0.02213167
-cat__merchant_category_Casino,0.0048592896
-num__std_amount_last_7_days,0.0037142609
-cat__device_type_iPhone,0.003244598
-num__average_amount_last_7_days,0.0025178848
-cat__merchant_category_Luxury Goods,0.00079313165
-num__transaction_gap_minutes,0.0005703816
+num__distance_from_last_transaction_km,0.40059513
+cat__merchant_category_ATM Withdrawal,0.2215321
+num__transaction_gap_minutes,0.09838209
+num__hour_of_day,0.08743342
+cat__merchant_category_Medical,0.04013461
+num__merchant_visit_frequency,0.030499095
+num__location_visit_frequency,0.024488395
+cat__device_type_iPhone,0.020729905
+num__device_usage_frequency,0.013107393
+cat__city_Delhi,0.012857229
+cat__device_type_Web,0.01013797
+num__std_amount_last_7_days,0.009987319
+num__transaction_amount,0.0066252667
+num__average_amount_last_7_days,0.005187348
+cat__device_type_Android,0.005180341
+cat__payment_method_Card,0.002944116
+num__daily_transaction_count,0.002942457
+cat__merchant_category_Dining,0.0028501293
+num__day_of_week,0.0028492345
+cat__merchant_category_Grocery,0.0015363864

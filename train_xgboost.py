@@ -11,7 +11,7 @@ def load_and_preprocess(user_id):
     print(f"\n--- Loading Data and Preprocessing for {user_id} ---")
     df = pd.read_csv(f'data/user_datasets/{user_id}_transactions_v2.csv')
     y = df['label'].values
-    X = df.drop(columns=['label', 'transaction_id', 'user_id', 'timestamp'])
+    X = df.drop(columns=['label', 'transaction_id', 'user_id', 'timestamp', 'fraud_type'], errors='ignore')
     
     n_samples = len(df)
     train_end = int(n_samples * 0.8)

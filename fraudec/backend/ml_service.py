@@ -22,14 +22,16 @@ MODELS_DIR = os.path.join(BASE_DIR, "models")
 DATA_DIR = os.path.join(BASE_DIR, "data", "user_datasets")
 RESULTS_DIR = os.path.join(BASE_DIR, "results")
 
-# The 20 raw columns the preprocessor was fit on (excludes label, transaction_id,
-# user_id, timestamp - and, as of the Indian-dataset retrain, merchant_id: dropped
-# as a high-cardinality memorization risk, see train_indian.py's docstring).
-# Shared by predict_transaction and the historical replay path so both build the
-# exact same schema.
+# The 19 raw columns the preprocessor was fit on (excludes label, transaction_id,
+# user_id, timestamp - and, as of the Indian-dataset harder-fraud retrain,
+# merchant_id AND device_id: both dropped as high-cardinality memorization
+# risks, see train_indian.py's docstring. device_type, new_device and
+# device_usage_frequency are kept - they carry device signal without a raw
+# per-device identifier). Shared by predict_transaction and the historical
+# replay path so both build the exact same schema.
 EXPECTED_FEATURE_COLUMNS = [
     'transaction_amount', 'merchant_category', 'payment_method',
-    'device_id', 'device_type', 'city', 'hour_of_day', 'day_of_week', 'is_weekend',
+    'device_type', 'city', 'hour_of_day', 'day_of_week', 'is_weekend',
     'transaction_gap_minutes', 'daily_transaction_count', 'average_amount_last_7_days',
     'std_amount_last_7_days', 'merchant_visit_frequency', 'device_usage_frequency',
     'location_visit_frequency', 'new_device', 'new_location', 'new_merchant',

@@ -13,10 +13,20 @@ Dataset used
 ------------
 `data/user_datasets/user_{01..10}_transactions.csv` - 5,000 rows/user,
 ~3-4.6% fraud rate, real Indian home cities per persona, real cumulative
-merchant/device/location visit counts (not random noise like v2's).
+merchant/device/location visit counts (not random noise like v2's). As of
+the harder-fraud regeneration, ~45% of each user's fraud rows are
+account-takeover (ATO) style: normal category/amount/city/hour for that
+user, with only 1-2 subtle tells (new device, ~1.15-1.5x amount, a few
+minutes' gap after a real transaction, an hour just past their usual
+window, or a new merchant within a normal category) - see
+`generate_user_datasets.py`'s `make_ato_fraud_row()`. The remaining ~55%
+are the original "obvious" named templates (new city, foreign merchant,
+luxury purchase, etc). Each fraud row's `fraud_type` column records which
+(e.g. `"ato_new_device"` or `"luxury_purchase"`) - evaluation-only
+metadata, see below.
 
-merchant_id dropped
---------------------
+merchant_id and device_id dropped
+-----------------------------------
 A pre-training leakage/quality check found `merchant_id`'s single-feature
 ROC-AUC at 0.90-0.98 across all 10 users - several fraud templates in
 generate_user_datasets.py mint one-off merchant IDs (`new_merch_{i}`) that
@@ -27,6 +37,14 @@ merchant this persona has seen before" as a smoother, bounded feature, so
 merchant_id is dropped from the deployed feature set. `merchant_category`
 is kept (also elevated, 0.87-1.00) since it's a coarse, low-cardinality,
 genuinely interpretable behavioral signal - not a per-row identifier.
+`device_id` is dropped for the same reason (high-cardinality, easily
+memorized) as part of the harder-fraud pass; `device_type`, `new_device`
+and `device_usage_frequency` are kept - they carry the same behavioral
+signal without a raw per-device identifier.
+
+`fraud_type` is never a model feature - it exists purely so this script
+can report ATO-specific recall (see `in_ato_recall_breakdown.csv` below),
+and is excluded from `FULL_FEATURE_COLUMNS`.
 
 Variant A vs Variant B
 -----------------------
@@ -104,12 +122,13 @@ RESULTS_DIR = 'results'
 
 FULL_FEATURE_COLUMNS = [
     'transaction_amount', 'merchant_category', 'merchant_id', 'payment_method',
-    'device_id', 'device_type', 'city', 'hour_of_day', 'day_of_week', 'is_weekend',
+    'device_type', 'city', 'hour_of_day', 'day_of_week', 'is_weekend',
     'transaction_gap_minutes', 'daily_transaction_count', 'average_amount_last_7_days',
     'std_amount_last_7_days', 'merchant_visit_frequency', 'device_usage_frequency',
     'location_visit_frequency', 'new_device', 'new_location', 'new_merchant',
     'distance_from_last_transaction_km'
-]
+]  # device_id removed (single-feature AUC / cardinality risk) - new_device,
+   # device_usage_frequency and device_type still carry device-related signal
 VARIANT_A_COLUMNS = [c for c in FULL_FEATURE_COLUMNS if c != 'merchant_id']          # deployed (_in artifacts)
 VARIANT_B_COLUMNS = [c for c in VARIANT_A_COLUMNS if c != 'merchant_category']       # ablation, metrics only
 
@@ -206,6 +225,7 @@ def main():
     rf_a_final_rows = []       # final_rf_metrics_in.csv (variant A only, deployed)
     shap_top5_rows = []        # top-5 SHAP features per user (variant A XGBoost, deployed model)
     user_runtime_rows = []     # per-user wall time -> printed + saved for the runtime report
+    ato_breakdown_rows = []    # ATO vs named-template test-set counts + recall (variant A, deployed)
 
     t_start = time.time()
     for uid in users:
@@ -213,11 +233,16 @@ def main():
         print(f"\n{'='*70}\n{uid}\n{'='*70}")
         df = pd.read_csv(f'{DATA_DIR}/{uid}_transactions.csv')
         y_all = df['label'].values
+        # fraud_type is evaluation-only metadata (never a model feature - see
+        # FULL_FEATURE_COLUMNS above and generate_user_datasets.py's COLUMNS
+        # comment). Carried through the same train_test_split call so its
+        # test-split values line up exactly with X_test/y_test's rows.
+        fraud_type_all = df['fraud_type'].fillna('normal').values
 
         for variant_name, cols, deploy in [('A', VARIANT_A_COLUMNS, True), ('B', VARIANT_B_COLUMNS, False)]:
             X = df[cols].copy()
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y_all, test_size=0.2, stratify=y_all, random_state=SEED
+            X_train, X_test, y_train, y_test, ft_train, ft_test = train_test_split(
+                X, y_all, fraud_type_all, test_size=0.2, stratify=y_all, random_state=SEED
             )
             preprocessor = build_preprocessor(X_train)
             Xtr = preprocessor.transform(X_train)
@@ -286,6 +311,32 @@ def main():
                 clean_names = [feature_names[i].replace('num__', '').replace('cat__', '') for i in top5_idx]
                 shap_top5_rows.append({'user_id': uid, 'top5_shap_features': ', '.join(clean_names)})
 
+                # ATO vs named-template recall breakdown, on this exact test split
+                is_ato_test = pd.Series(ft_test).astype(str).str.startswith('ato_').values
+                fraud_mask = (y_test == 1)
+                ato_mask = fraud_mask & is_ato_test
+                named_mask = fraud_mask & ~is_ato_test
+                xgb_pred_test = xgb_model.predict(Xte)
+                rf_pred_test = rf_model.predict(Xte)
+
+                def _recall(pred, mask):
+                    n = int(mask.sum())
+                    return n, (float(pred[mask].mean()) if n > 0 else None)
+
+                ato_n, ato_recall_xgb = _recall(xgb_pred_test, ato_mask)
+                named_n, named_recall_xgb = _recall(xgb_pred_test, named_mask)
+                _, ato_recall_rf = _recall(rf_pred_test, ato_mask)
+                _, named_recall_rf = _recall(rf_pred_test, named_mask)
+                ato_breakdown_rows.append({
+                    'user_id': uid,
+                    'test_fraud_total': int(fraud_mask.sum()),
+                    'ato_test_count': ato_n, 'named_test_count': named_n,
+                    'ato_pct_of_test_fraud': round(100 * ato_n / max(int(fraud_mask.sum()), 1), 1),
+                    'xgb_recall_ato': ato_recall_xgb, 'xgb_recall_named': named_recall_xgb,
+                    'rf_recall_ato': ato_recall_rf, 'rf_recall_named': named_recall_rf,
+                    'low_confidence_ato': ato_n < 15,
+                })
+
         user_runtime = time.time() - t_user_start
         user_runtime_rows.append({'user_id': uid, 'runtime_seconds': round(user_runtime, 1)})
         print(f"  {uid} TOTAL RUNTIME (variants A+B, XGB+RF): {user_runtime:.1f}s")
@@ -295,6 +346,7 @@ def main():
     pd.DataFrame(rf_a_final_rows).to_csv(f'{RESULTS_DIR}/final_rf_metrics_in.csv', index=False)
     pd.DataFrame(shap_top5_rows).to_csv(f'{RESULTS_DIR}/in_shap_top5_per_user.csv', index=False)
     pd.DataFrame(user_runtime_rows).to_csv(f'{RESULTS_DIR}/in_runtime_per_user.csv', index=False)
+    pd.DataFrame(ato_breakdown_rows).to_csv(f'{RESULTS_DIR}/in_ato_recall_breakdown.csv', index=False)
 
     print("\n\nPER-USER RUNTIME SUMMARY:")
     for r in user_runtime_rows:

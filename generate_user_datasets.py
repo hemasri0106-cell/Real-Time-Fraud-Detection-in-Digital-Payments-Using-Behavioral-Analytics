@@ -577,18 +577,87 @@ def make_fraud_rows(profile, rng, merchant_pool, device_pool, fraud_type, budget
     return rows[:budget_left] if budget_left < len(rows) else rows
 
 
-def generate_fraud_rows(profile, rng, merchant_pool, device_pool, fraud_count):
+# --------------------------------------------------------------------------
+# Account-takeover (ATO) fraud: uses this user's own normal category/amount/
+# city/hour distributions (same pickers as generate_normal_rows), anchored to
+# a real normal transaction of theirs for realistic timing/city context, with
+# exactly 1-2 subtle tells layered on top - never all of them at once.
+# --------------------------------------------------------------------------
+
+ATO_TELLS = ["new_device", "higher_amount", "short_gap", "odd_hour", "new_merchant_same_category"]
+
+
+def make_ato_fraud_row(profile, rng, merchant_pool, device_pool, normal_rows):
+    anchor = normal_rows[rng.integers(0, len(normal_rows))]
+    anchor_ts = anchor["timestamp"]
+
+    cats = list(profile["categories"].keys())
+    cat_weights = np.array(list(profile["categories"].values()))
+    cat_weights = cat_weights / cat_weights.sum()
+    category = rng.choice(cats, p=cat_weights)
+
+    merchant = pick_merchant(profile, merchant_pool, category, rng)
+    device = pick_device(profile, device_pool, rng)
+    city = pick_city(profile, rng, novel_prob=0.0)
+    payment = pick_payment(profile, rng)
+    amount = gen_amount(*profile["amount_range"], rng)
+    ts = anchor_ts
+
+    n_tells = 1 if rng.random() < 0.6 else 2
+    chosen = list(rng.choice(ATO_TELLS, size=n_tells, replace=False))
+
+    if "new_device" in chosen:
+        new_id = f"DEV-UNK-{int(rng.integers(1000, 9999))}"
+        device = {"device_id": new_id, "device_type": rng.choice(DEVICE_TYPES)}
+    if "higher_amount" in chosen:
+        amount = amount * rng.uniform(1.15, 1.5)
+        amount = min(amount, profile["amount_range"][1] * 1.5)
+    if "short_gap" in chosen:
+        ts = anchor_ts + timedelta(minutes=int(rng.integers(1, 6)))
+    if "odd_hour" in chosen:
+        _, hi = profile["active_hours"]
+        shift = int(rng.integers(1, 4))
+        ts = ts.replace(hour=(hi + shift) % 24)
+    if "new_merchant_same_category" in chosen:
+        new_id = max(m["merchant_id"] for m in merchant_pool) + 1
+        merchant = {"merchant_id": new_id, "category": category}
+        merchant_pool.append(merchant)
+
+    return dict(
+        user_id=profile["user_id"], timestamp=ts,
+        transaction_amount=round(amount, 2),
+        merchant_category=category, merchant_id=merchant["merchant_id"],
+        payment_method=payment, device_id=device["device_id"], device_type=device["device_type"],
+        city=city, label=1, fraud_type="ato_" + "_".join(chosen),
+    )
+
+
+def generate_fraud_rows(profile, rng, merchant_pool, device_pool, fraud_count, normal_rows, ato_share=0.45):
+    """Splits fraud_count directly into an ATO budget and a named-template
+    budget (rather than a per-slot coin flip), since several named templates
+    (rapid_burst_30s, rapid_repeated_transfers, multi_atm_withdrawals,
+    late_night_spree, hourly_location_hopping, distant_800km_15min) emit 2-3
+    rows per slot while each ATO call emits exactly 1 - a per-slot flip would
+    under-shoot ato_share at the row level because of that row-count skew."""
     templates = profile["fraud_templates"]
+    n_ato = int(round(fraud_count * ato_share))
+    n_named = fraud_count - n_ato
+
     rows = []
     t_idx = 0
     guard = 0
-    while len(rows) < fraud_count and guard < fraud_count * 5 + 20:
+    while len(rows) < n_named and guard < n_named * 5 + 20:
         guard += 1
         fraud_type = templates[t_idx % len(templates)]
         t_idx += 1
-        budget_left = fraud_count - len(rows)
+        budget_left = n_named - len(rows)
         new_rows = make_fraud_rows(profile, rng, merchant_pool, device_pool, fraud_type, budget_left)
         rows.extend(new_rows)
+    rows = rows[:n_named]
+
+    for _ in range(n_ato):
+        rows.append(make_ato_fraud_row(profile, rng, merchant_pool, device_pool, normal_rows))
+
     return rows[:fraud_count]
 
 
@@ -652,6 +721,7 @@ def compute_derived_features(rows):
             location_visit_frequency=city_seen[r["city"]],
             new_device=new_device, new_location=new_location, new_merchant=new_merchant,
             distance_from_last_transaction_km=distance, label=r["label"],
+            fraud_type=r.get("fraud_type"),
         ))
 
         amount_history.append((ts, r["transaction_amount"]))
@@ -672,6 +742,8 @@ COLUMNS = [
     "average_amount_last_7_days", "std_amount_last_7_days", "merchant_visit_frequency",
     "device_usage_frequency", "location_visit_frequency", "new_device", "new_location",
     "new_merchant", "distance_from_last_transaction_km", "label",
+    "fraud_type",  # evaluation-only metadata (e.g. "ato_new_device") - never a model feature,
+                   # excluded from FULL_FEATURE_COLUMNS in train_indian.py
 ]
 
 
@@ -686,7 +758,7 @@ def generate_user_dataset(profile):
     normal_count = ROWS_PER_USER - fraud_count
 
     normal_rows = generate_normal_rows(profile, rng, merchant_pool, device_pool, normal_count)
-    fraud_rows = generate_fraud_rows(profile, rng, merchant_pool, device_pool, fraud_count)
+    fraud_rows = generate_fraud_rows(profile, rng, merchant_pool, device_pool, fraud_count, normal_rows)
 
     all_rows = normal_rows + fraud_rows
     assert len(all_rows) == ROWS_PER_USER, f"user {profile['user_id']}: got {len(all_rows)} rows, expected {ROWS_PER_USER}"

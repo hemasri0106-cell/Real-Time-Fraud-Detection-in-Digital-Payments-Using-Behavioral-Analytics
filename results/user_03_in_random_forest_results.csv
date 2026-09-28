@@ -1,2 +1,2 @@
 n_estimators,min_samples_split,min_samples_leaf,max_features,max_depth,class_weight,cv_f1,test_precision,test_recall,test_f1,test_roc_auc,test_pr_auc
-100,2,1,sqrt,15,balanced,1.0,1.0,1.0,1.0,1.0,1.0
+300,10,1,sqrt,,balanced,0.9075034693704154,0.975,0.8666666666666667,0.9176470588235294,0.963129726585224,0.9316568760901554
