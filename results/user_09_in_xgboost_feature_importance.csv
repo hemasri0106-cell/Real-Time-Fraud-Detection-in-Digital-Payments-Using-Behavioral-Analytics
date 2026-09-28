@@ -1,21 +1,21 @@
 feature,importance
-num__location_visit_frequency,0.19636728
-num__device_usage_frequency,0.1474622
-num__hour_of_day,0.12778632
-num__transaction_gap_minutes,0.09175982
-cat__merchant_category_Cloud Services,0.05861119
-num__merchant_visit_frequency,0.05326043
-cat__payment_method_Card,0.038760502
-cat__city_Goa,0.03829348
-num__std_amount_last_7_days,0.030805595
-cat__device_type_Web,0.029557433
-num__distance_from_last_transaction_km,0.025137093
-cat__merchant_category_Coffee,0.024452632
-cat__merchant_category_Software,0.02412603
-num__daily_transaction_count,0.022802323
-num__average_amount_last_7_days,0.017010642
-cat__merchant_category_Restaurants,0.01597802
-cat__city_Bangalore,0.014112281
-num__transaction_amount,0.013241956
-num__day_of_week,0.011532292
-cat__device_type_Android,0.009363867
+num__location_visit_frequency,0.17425679
+num__device_usage_frequency,0.16766427
+num__hour_of_day,0.11149307
+num__merchant_visit_frequency,0.104994915
+cat__city_Bangalore,0.04315026
+cat__merchant_category_International Transfer,0.037996985
+cat__merchant_category_Coffee,0.03500622
+cat__device_type_Android,0.0292911
+num__day_of_week,0.028216947
+cat__merchant_category_Restaurants,0.027369564
+num__transaction_gap_minutes,0.026903044
+cat__merchant_category_Cloud Services,0.024603266
+cat__city_Goa,0.024494806
+num__std_amount_last_7_days,0.023838172
+num__daily_transaction_count,0.02169707
+num__average_amount_last_7_days,0.019331764
+cat__payment_method_Card,0.019320145
+num__distance_from_last_transaction_km,0.014247751
+num__transaction_amount,0.013955344
+cat__merchant_category_Software,0.013456814

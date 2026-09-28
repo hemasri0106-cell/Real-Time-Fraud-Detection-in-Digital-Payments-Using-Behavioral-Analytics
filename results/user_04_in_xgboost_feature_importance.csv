@@ -1,21 +1,21 @@
 feature,importance
-cat__merchant_category_Bank Transfer,0.2756439
-num__device_usage_frequency,0.086047806
-num__transaction_gap_minutes,0.08491876
-num__merchant_visit_frequency,0.08324855
-cat__merchant_category_Overseas Merchant,0.081644304
-num__hour_of_day,0.07974597
-cat__city_Mumbai,0.0393119
-cat__merchant_category_Hotels,0.036118314
-cat__payment_method_UPI,0.03528076
-num__transaction_amount,0.0303081
-num__std_amount_last_7_days,0.017795613
-num__distance_from_last_transaction_km,0.016945114
-num__daily_transaction_count,0.016195683
-cat__device_type_Android,0.016161181
-num__day_of_week,0.014844837
-cat__merchant_category_Suppliers,0.013895559
-cat__merchant_category_Fuel,0.013517498
-num__location_visit_frequency,0.0129768
-cat__merchant_category_Office,0.009527246
-num__average_amount_last_7_days,0.0095024835
+cat__merchant_category_Bank Transfer,0.33812398
+num__merchant_visit_frequency,0.11917067
+num__hour_of_day,0.109746285
+num__device_usage_frequency,0.08867513
+cat__merchant_category_Hotels,0.046395097
+num__transaction_gap_minutes,0.039402205
+num__daily_transaction_count,0.03209763
+num__std_amount_last_7_days,0.024323186
+cat__city_Mumbai,0.022517616
+cat__city_Pune,0.021687858
+num__average_amount_last_7_days,0.019607192
+num__distance_from_last_transaction_km,0.019070564
+num__location_visit_frequency,0.017472519
+num__transaction_amount,0.015957274
+cat__payment_method_Card,0.012823221
+cat__device_type_Android,0.010855826
+cat__merchant_category_Office,0.010644663
+cat__merchant_category_Overseas Merchant,0.009070143
+cat__payment_method_UPI,0.008162178
+cat__payment_method_Bank Transfer,0.0074467086

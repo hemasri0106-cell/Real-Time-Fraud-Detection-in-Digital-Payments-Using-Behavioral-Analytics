@@ -1,21 +1,21 @@
 feature,importance
-cat__merchant_category_Bank Transfer,0.21935402
-cat__merchant_category_Gaming Website,0.2014888
-cat__merchant_category_Crypto Exchange,0.18961155
-num__transaction_gap_minutes,0.053033326
-num__hour_of_day,0.051886458
-num__transaction_amount,0.04994716
-num__new_device,0.026504505
-num__new_merchant,0.025993932
-cat__device_type_Android,0.0258503
-cat__payment_method_UPI,0.023961125
-cat__device_type_Web,0.019846084
-num__device_usage_frequency,0.016233005
-cat__payment_method_Card,0.015082704
-num__merchant_visit_frequency,0.013680313
-num__is_weekend,0.011032143
-num__daily_transaction_count,0.010866562
-num__location_visit_frequency,0.007681344
-cat__merchant_category_Pharmacy,0.0075314576
-num__std_amount_last_7_days,0.0074207666
-cat__merchant_category_Grocery,0.0070910207
+cat__merchant_category_Crypto Exchange,0.22743313
+cat__merchant_category_Gaming Website,0.2248582
+num__hour_of_day,0.079135396
+num__device_usage_frequency,0.06300026
+num__transaction_amount,0.05797569
+cat__payment_method_Card,0.056926887
+num__merchant_visit_frequency,0.055943675
+cat__merchant_category_Utility Bills,0.036844347
+cat__device_type_Android,0.021940185
+cat__merchant_category_Grocery,0.021842599
+cat__device_type_iPhone,0.021754237
+num__std_amount_last_7_days,0.019824903
+num__location_visit_frequency,0.01957066
+num__daily_transaction_count,0.017763637
+num__transaction_gap_minutes,0.017638743
+cat__merchant_category_Pharmacy,0.01618721
+num__average_amount_last_7_days,0.01592785
+cat__device_type_Web,0.014145916
+num__day_of_week,0.011286429
+cat__merchant_category_Bank Transfer,0.0

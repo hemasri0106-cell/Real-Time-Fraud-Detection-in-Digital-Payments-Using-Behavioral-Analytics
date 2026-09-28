@@ -601,10 +601,20 @@ def make_ato_fraud_row(profile, rng, merchant_pool, device_pool, normal_rows):
     city = pick_city(profile, rng, novel_prob=0.0)
     payment = pick_payment(profile, rng)
     amount = gen_amount(*profile["amount_range"], rng)
-    ts = anchor_ts
 
     n_tells = 1 if rng.random() < 0.6 else 2
     chosen = list(rng.choice(ATO_TELLS, size=n_tells, replace=False))
+
+    if "short_gap" in chosen:
+        ts = anchor_ts + timedelta(minutes=int(rng.integers(1, 6)))
+    else:
+        # NOT anchor_ts directly - that would give this row the anchor's exact
+        # timestamp, an artificial gap=0 that isn't the "short_gap" tell (and
+        # was leaking transaction_gap_minutes as an unintended signal for
+        # every ATO row that didn't choose it). Instead: a genuinely random
+        # time on the same day, within this user's normal active hours - same
+        # generator used for normal rows, so no exact-duplicate timestamp.
+        ts = random_time_in_hours(rng, anchor_ts, profile["active_hours"])
 
     if "new_device" in chosen:
         new_id = f"DEV-UNK-{int(rng.integers(1000, 9999))}"
@@ -612,8 +622,6 @@ def make_ato_fraud_row(profile, rng, merchant_pool, device_pool, normal_rows):
     if "higher_amount" in chosen:
         amount = amount * rng.uniform(1.15, 1.5)
         amount = min(amount, profile["amount_range"][1] * 1.5)
-    if "short_gap" in chosen:
-        ts = anchor_ts + timedelta(minutes=int(rng.integers(1, 6)))
     if "odd_hour" in chosen:
         _, hi = profile["active_hours"]
         shift = int(rng.integers(1, 4))
