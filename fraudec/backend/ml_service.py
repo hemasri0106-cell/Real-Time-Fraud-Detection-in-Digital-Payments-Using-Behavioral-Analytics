@@ -22,11 +22,13 @@ MODELS_DIR = os.path.join(BASE_DIR, "models")
 DATA_DIR = os.path.join(BASE_DIR, "data", "user_datasets")
 RESULTS_DIR = os.path.join(BASE_DIR, "results")
 
-# The 21 raw columns the preprocessor was fit on (excludes label, transaction_id,
-# user_id, timestamp). Shared by predict_transaction and the historical replay path
-# so both build the exact same schema.
+# The 20 raw columns the preprocessor was fit on (excludes label, transaction_id,
+# user_id, timestamp - and, as of the Indian-dataset retrain, merchant_id: dropped
+# as a high-cardinality memorization risk, see train_indian.py's docstring).
+# Shared by predict_transaction and the historical replay path so both build the
+# exact same schema.
 EXPECTED_FEATURE_COLUMNS = [
-    'transaction_amount', 'merchant_category', 'merchant_id', 'payment_method',
+    'transaction_amount', 'merchant_category', 'payment_method',
     'device_id', 'device_type', 'city', 'hour_of_day', 'day_of_week', 'is_weekend',
     'transaction_gap_minutes', 'daily_transaction_count', 'average_amount_last_7_days',
     'std_amount_last_7_days', 'merchant_visit_frequency', 'device_usage_frequency',
@@ -34,13 +36,13 @@ EXPECTED_FEATURE_COLUMNS = [
     'distance_from_last_transaction_km'
 ]
 
-_VALID_USER_ID_PATTERN = re.compile(r"^(.+)_v2_xgboost\.joblib$")
+_VALID_USER_ID_PATTERN = re.compile(r"^(.+)_in_xgboost\.joblib$")
 
 def get_valid_user_ids() -> List[str]:
     """The real whitelist of personas this app can actually score - derived
     from which trained model artifacts exist on disk, not a hand-maintained
     list that can drift out of sync with models/."""
-    paths = glob.glob(os.path.join(MODELS_DIR, "*_v2_xgboost.joblib"))
+    paths = glob.glob(os.path.join(MODELS_DIR, "*_in_xgboost.joblib"))
     ids = []
     for p in paths:
         m = _VALID_USER_ID_PATTERN.match(os.path.basename(p))
@@ -52,25 +54,25 @@ def get_cached_model(user_id: str):
     if user_id in _model_cache:
         _model_cache.move_to_end(user_id)
         return _model_cache[user_id]
-        
-    model_path = os.path.join(MODELS_DIR, f"{user_id}_v2_xgboost.joblib")
+
+    model_path = os.path.join(MODELS_DIR, f"{user_id}_in_xgboost.joblib")
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model for {user_id} not found.")
-        
+
     model = joblib.load(model_path)
     _model_cache[user_id] = model
-    
+
     if len(_model_cache) > MAX_CACHED_MODELS:
         _model_cache.popitem(last=False)
-        
+
     return model
 
 def get_cached_preprocessor(user_id: str):
     if user_id in _preprocessor_cache:
         _preprocessor_cache.move_to_end(user_id)
         return _preprocessor_cache[user_id]
-        
-    prep_path = os.path.join(MODELS_DIR, f"preprocessor_{user_id}_v2.joblib")
+
+    prep_path = os.path.join(MODELS_DIR, f"preprocessor_{user_id}_in.joblib")
     if not os.path.exists(prep_path):
         raise FileNotFoundError(f"Preprocessor for {user_id} not found.")
         
@@ -120,25 +122,47 @@ def get_global_feature_importances(user_id: str, top_n: int = 6) -> List[Dict[st
 def get_model_last_modified(user_id: str) -> str:
     """Real last-modified timestamp of the model artifact on disk - i.e. when
     it was actually last retrained/saved, not a fabricated 'Today, 04:00 UTC'."""
-    model_path = os.path.join(MODELS_DIR, f"{user_id}_v2_xgboost.joblib")
+    model_path = os.path.join(MODELS_DIR, f"{user_id}_in_xgboost.joblib")
     if not os.path.exists(model_path):
         return None
     return datetime.fromtimestamp(os.path.getmtime(model_path), tz=timezone.utc).isoformat()
 
 def get_user_metrics(user_id: str) -> Dict[str, Any]:
-    metrics_path = os.path.join(RESULTS_DIR, "final_xgboost_metrics.csv")
+    metrics_path = os.path.join(RESULTS_DIR, "final_xgboost_metrics_in.csv")
     if not os.path.exists(metrics_path):
         return {}
-        
+
     df = pd.read_csv(metrics_path)
     user_row = df[df["user_id"] == user_id]
     if user_row.empty:
         return {}
-        
-    return user_row.iloc[0].to_dict()
+
+    result = user_row.iloc[0].to_dict()
+
+    # Real trained-sample count: the final model is retrained on train+val
+    # (the first 90% of the chronological split, test held out) - see
+    # train_xgboost.py's load_and_preprocess / final_training_and_eval.
+    try:
+        historical_df = _get_historical_df(user_id)
+        result["trained_samples"] = int(len(historical_df) * 0.9)
+    except FileNotFoundError:
+        pass
+
+    return result
+
+def get_average_roc_auc() -> float:
+    """Real mean test ROC-AUC across all trained personas - used for the
+    pre-login telemetry bar, where no single user_id is selected yet."""
+    metrics_path = os.path.join(RESULTS_DIR, "final_xgboost_metrics_in.csv")
+    if not os.path.exists(metrics_path):
+        return None
+    df = pd.read_csv(metrics_path)
+    if df.empty or "test_roc_auc" not in df.columns:
+        return None
+    return float(df["test_roc_auc"].mean())
 
 def get_transactions(user_id: str, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
-    data_path = os.path.join(DATA_DIR, f"{user_id}_transactions_v2.csv")
+    data_path = os.path.join(DATA_DIR, f"{user_id}_transactions.csv")
     if not os.path.exists(data_path):
         return []
 
@@ -151,7 +175,7 @@ def _get_historical_df(user_id: str) -> pd.DataFrame:
         _historical_data_cache.move_to_end(user_id)
         return _historical_data_cache[user_id]
 
-    data_path = os.path.join(DATA_DIR, f"{user_id}_transactions_v2.csv")
+    data_path = os.path.join(DATA_DIR, f"{user_id}_transactions.csv")
     df = pd.read_csv(data_path)
     _historical_data_cache[user_id] = df
 

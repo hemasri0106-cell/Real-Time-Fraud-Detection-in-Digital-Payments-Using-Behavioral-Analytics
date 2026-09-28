@@ -1,0 +1,21 @@
+feature,importance
+cat__payment_method_Card,0.21341299
+cat__device_id_DEV-08-1,0.19865368
+cat__merchant_category_Amazon,0.15421252
+cat__merchant_category_Electronics,0.12279933
+cat__merchant_category_Flipkart,0.1204056
+cat__merchant_category_Myntra,0.114838205
+cat__merchant_category_Unknown Merchant,0.040718727
+num__hour_of_day,0.017895976
+num__transaction_amount,0.016188929
+num__merchant_visit_frequency,0.0003135973
+num__daily_transaction_count,0.0002604935
+num__std_amount_last_7_days,0.00010820735
+num__device_usage_frequency,6.59817e-05
+num__transaction_gap_minutes,5.1009607e-05
+num__location_visit_frequency,4.2834752e-05
+num__average_amount_last_7_days,3.1905314e-05
+cat__device_id_DEV-08-47,0.0
+cat__device_id_DEV-08-49,0.0
+cat__device_id_DEV-08-7,0.0
+cat__device_id_DEV-08-6,0.0

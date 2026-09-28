@@ -1,0 +1,2 @@
+subsample,n_estimators,min_child_weight,max_depth,learning_rate,colsample_bytree,cv_f1,test_precision,test_recall,test_f1,test_roc_auc,test_pr_auc
+0.8,300,1,5,0.03,0.8,0.9628232005590496,0.9166666666666666,1.0,0.9565217391304348,0.9997493027482687,0.9920063553263517

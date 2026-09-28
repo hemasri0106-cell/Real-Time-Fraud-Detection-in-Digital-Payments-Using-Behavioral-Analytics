@@ -10,19 +10,11 @@
 <img alt="Fraudec Logo" class="h-8 w-auto object-contain" src="{{ url_for('static', path='fraudec_logo.svg') }}" />
 <span class="font-headline-md text-headline-md tracking-tight text-primary">Fraudec</span>
 </div>
-<div class="hidden md:flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-low">
-<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
-<span class="font-label-caps text-label-caps uppercase text-on-surface-variant">SYSTEM ACTIVE // ML ENGINE v4.2</span>
-</div>
 </div>
 <div class="flex items-center gap-space-lg">
 <nav class="hidden sm:flex items-center gap-space-lg" data-active-classes="text-primary font-bold">
 <a aria-current="page" class="transition-colors text-primary font-bold" data-path="demo-login" href="#">Login</a>
-<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="documentation" href="#">Documentation</a>
 </nav>
-<div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-high">
-<span class="font-mono-sm text-mono-sm text-primary">&lt;12ms XGBoost latency</span>
-</div>
 <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
 <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
 </div>
@@ -36,16 +28,7 @@
 <div class="w-full max-w-md p-space-lg rounded-xl bg-surface-container-high shadow-2xl relative overflow-hidden">
 <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary-container to-secondary animate-pulse"></div>
 <div class="flex items-start justify-between mb-space-md">
-<div class="flex items-center gap-space-sm">
-<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary-container">
-<span class="material-symbols-outlined text-[20px] animate-spin">sync</span>
-</div>
-<div>
-<h4 class="font-headline-md text-headline-md text-on-surface">SYNTHESIS_INIT</h4>
-<p class="font-mono-sm text-mono-sm text-on-surface-variant">MOUNTING XGBOOST MODEL</p>
-</div>
-</div>
-<span class="font-mono-sm text-mono-sm text-primary-container bg-surface-container-low px-space-xs py-0.5 rounded">200 OK</span>
+<h4 class="font-headline-md text-headline-md text-on-surface">Confirm Persona</h4>
 </div>
 <div class="space-y-space-sm mb-space-lg font-mono-sm text-mono-sm">
 <div class="p-space-sm rounded bg-surface-container-lowest flex justify-between items-center">
@@ -56,17 +39,10 @@
 <span class="text-on-surface-variant">ENGINE_ID:</span>
 <span class="text-primary-container" id="modal-model-id">--</span>
 </div>
-<div class="p-space-sm rounded bg-surface-container-lowest">
-<div class="flex justify-between items-center mb-1">
-<span class="text-on-surface-variant">JWT_PAYLOAD:</span>
-<span class="text-on-surface font-semibold text-[10px]">SIGNATURE_VALID</span>
-</div>
-<div class="text-[10px] text-on-surface-variant truncate font-mono-sm">eyJhbGciOiJFRDI1NTE5IiwidHlwIjoiSldUIn0.e3VzZXJfaWQ6ICJ4Z2Jvb3N0LW...</div>
-</div>
 </div>
 <div class="flex items-center justify-between gap-space-sm">
 <button class="px-space-md py-space-xs rounded font-mono-md text-mono-md bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" id="cancel-auth-btn">
-          TERMINATE
+          Cancel
         </button>
 <button class="flex-1 py-space-xs px-space-md rounded font-mono-md text-mono-md bg-primary-container text-on-primary font-bold flex items-center justify-center gap-space-xs shadow-lg hover:shadow-primary-container/30 transition-all" id="launch-dash-btn">
 <span>ENTER DASHBOARD</span>
@@ -81,10 +57,6 @@
 <div class="absolute top-96 -left-32 w-[400px] h-[400px] bg-secondary-container/10 rounded-full blur-[120px] pointer-events-none"></div>
 <!-- Header / Hero Segment -->
 <div class="w-full px-margin-desktop pt-space-xl pb-space-lg flex flex-col items-center text-center relative z-10">
-<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container-low mb-space-md shadow-sm">
-<span class="w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
-<span class="font-label-caps text-label-caps uppercase text-primary tracking-widest">BEHAVIORAL TELEMETRY // SYNTHETIC MODEL PROVISIONING</span>
-</div>
 <h1 class="font-display-lg text-display-lg max-w-4xl tracking-tight text-on-surface mb-space-md">
         Select a Demo Persona to Test <span class="text-primary-container">Hyper-Personalized</span> ML Fraud Detection
       </h1>
@@ -92,41 +64,14 @@
         Every individual has an unmistakable behavioral footprint. Select a synthetic persona below to mount their dedicated XGBoost model, initialize custom risk baselines, and stream their transaction telemetry.
       </p>
 <!-- Global Telemetry Bar -->
-<div class="w-full max-w-6xl grid grid-cols-2 lg:grid-cols-4 gap-space-sm p-space-sm rounded-xl bg-surface-container-low backdrop-blur-md shadow-lg">
+<div class="w-full max-w-xs grid grid-cols-1 gap-space-sm p-space-sm rounded-xl bg-surface-container-low backdrop-blur-md shadow-lg">
 <div class="p-space-sm rounded-lg bg-surface-container flex items-center gap-space-sm">
 <div class="w-9 h-9 rounded-md bg-surface-container-high flex items-center justify-center text-primary-container">
 <span class="material-symbols-outlined text-[20px]">groups</span>
 </div>
 <div class="flex flex-col text-left">
-<span class="font-mono-lg text-mono-lg text-on-surface">10</span>
+<span class="font-mono-lg text-mono-lg text-on-surface">{{ persona_count }}</span>
 <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Synthetic Personas Online</span>
-</div>
-</div>
-<div class="p-space-sm rounded-lg bg-surface-container flex items-center gap-space-sm">
-<div class="w-9 h-9 rounded-md bg-surface-container-high flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-[20px]">security</span>
-</div>
-<div class="flex flex-col text-left">
-<span class="font-mono-lg text-mono-lg text-on-surface">100%</span>
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Behavioral Isolation</span>
-</div>
-</div>
-<div class="p-space-sm rounded-lg bg-surface-container flex items-center gap-space-sm">
-<div class="w-9 h-9 rounded-md bg-surface-container-high flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[20px]">precision_manufacturing</span>
-</div>
-<div class="flex flex-col text-left">
-<span class="font-mono-lg text-mono-lg text-on-surface">0.04%</span>
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Baseline False Positive</span>
-</div>
-</div>
-<div class="p-space-sm rounded-lg bg-surface-container flex items-center gap-space-sm">
-<div class="w-9 h-9 rounded-md bg-surface-container-high flex items-center justify-center text-primary-container">
-<span class="material-symbols-outlined text-[20px]">key</span>
-</div>
-<div class="flex flex-col text-left">
-<span class="font-mono-lg text-mono-lg text-primary-container">ACTIVE</span>
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">JWT Auto-Provisioning</span>
 </div>
 </div>
 </div>
@@ -150,16 +95,6 @@
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">College Student</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">Sub-50 Velocity Index</p>
 </div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-secondary font-semibold">LOW (0.18)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-secondary w-[18%]"></div>
-</div>
-</div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
 <span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">High Frequency</span>
@@ -167,7 +102,7 @@
 <span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Campus Radius</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
-              Frequent coffee shops, bookstore micro-charges, late-night food deliveries, strict sub-$50 typical velocity.
+              Frequent coffee shops, bookstore micro-charges, late-night food deliveries, strict sub-₹50 typical velocity.
             </p>
 </div>
 <button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_01_v2_xgboost" data-user-id="user_01" data-persona="College Student">
@@ -190,16 +125,6 @@
 <div class="mb-space-sm">
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Trauma Surgeon</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">Circadian Shift Pattern</p>
-</div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-primary-container font-semibold">MED (0.54)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-primary-container w-[54%]"></div>
-</div>
 </div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
@@ -232,16 +157,6 @@
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Digital Nomad</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">Global Roaming Nodes</p>
 </div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-primary-container font-semibold">HIGH (0.76)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-primary-container w-[76%]"></div>
-</div>
-</div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
 <span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Multi-Currency</span>
@@ -272,16 +187,6 @@
 <div class="mb-space-sm">
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Retired Pensioner</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">Static Local Baseline</p>
-</div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-secondary font-semibold">MINIMAL (0.05)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-secondary w-[5%]"></div>
-</div>
 </div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
@@ -314,16 +219,6 @@
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Day Trader</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">Microsecond Liquidity</p>
 </div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-primary-container font-semibold">HIGH (0.89)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-primary-container w-[89%]"></div>
-</div>
-</div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
 <span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Rapid Transfers</span>
@@ -354,16 +249,6 @@
 <div class="mb-space-sm">
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Logistics Driver</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">Linear Corridor Traversal</p>
-</div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-secondary font-semibold">MED (0.42)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-secondary w-[42%]"></div>
-</div>
 </div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
@@ -396,16 +281,6 @@
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Startup CEO</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">High-Limit SaaS Matrix</p>
 </div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-primary-container font-semibold">MED (0.61)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-primary-container w-[61%]"></div>
-</div>
-</div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
 <span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Exec Expense</span>
@@ -437,16 +312,6 @@
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Luxury Collector</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">Spike Value Escrow</p>
 </div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-primary font-semibold">HIGH (0.84)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-primary w-[84%]"></div>
-</div>
-</div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
 <span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Ultra-High Ticket</span>
@@ -454,7 +319,7 @@
 <span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">Boutique</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
-              Infrequent multi-thousand dollar transactions, verified auction houses, boutique jewelers.
+              Infrequent multi-thousand rupee transactions, verified auction houses, boutique jewelers.
             </p>
 </div>
 <button class="persona-auth-btn w-full py-space-xs px-space-sm rounded bg-surface-container-low hover:bg-primary-container hover:text-on-primary text-primary transition-all duration-200 flex items-center justify-between font-mono-md text-mono-md" data-model="user_08_v2_xgboost" data-user-id="user_08" data-persona="Luxury Goods Collector">
@@ -477,16 +342,6 @@
 <div class="mb-space-sm">
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">E-Com Merchant</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">Cross-Border Supplier Stream</p>
-</div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-primary-container font-semibold">HIGH (0.79)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-primary-container w-[79%]"></div>
-</div>
 </div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
@@ -519,16 +374,6 @@
 <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Nightlife Host</h3>
 <p class="font-mono-sm text-mono-sm text-secondary-fixed">Nocturnal P2P Cluster</p>
 </div>
-<!-- Risk Profile Meter -->
-<div class="p-space-xs rounded bg-surface-container-lowest mb-space-sm">
-<div class="flex justify-between items-center font-mono-sm text-mono-sm mb-1">
-<span class="text-on-surface-variant">VOLATILITY</span>
-<span class="text-secondary font-semibold">HIGH (0.88)</span>
-</div>
-<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-secondary w-[88%]"></div>
-</div>
-</div>
 <!-- Tags -->
 <div class="flex flex-wrap gap-1 mb-space-md">
 <span class="px-space-xs py-0.5 rounded bg-surface-container-high font-mono-sm text-[10px] text-on-surface-variant">10PM - 5AM Peak</span>
@@ -546,31 +391,12 @@
 </div>
 </div>
 </div>
-<!-- Diagnostic Footnote Panel -->
-<div class="w-full px-margin-desktop mt-space-xl">
-<div class="max-w-6xl mx-auto p-space-md rounded-xl bg-surface-container-low/50 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-space-md">
-<div class="flex items-center gap-space-sm">
-<span class="material-symbols-outlined text-primary-container text-[20px]">terminal</span>
-<span class="font-mono-sm text-mono-sm text-on-surface-variant">
-            DEMO MODE ENABLED // All models pre-trained on 14.8M synthetic ISO 20022 transactional vectors.
-          </span>
-</div>
-<div class="flex items-center gap-space-md">
-<span class="font-mono-sm text-mono-sm text-primary">ED25519 CIPHERTEXT READY</span>
-<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
-</div>
-</div>
-</div>
 </div>
 </div>
 </main>
 <footer class="w-full bg-surface-container-lowest py-space-lg">
-<div class="w-full px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant">
+<div class="w-full px-margin-desktop flex items-center justify-center text-on-surface-variant">
 <span class="font-label-caps text-label-caps uppercase text-on-surface-variant">© 2025 FRAUDEC CYBERNETICS // REAL-TIME RISK INTELLIGENCE</span>
-<div class="flex items-center gap-space-md font-mono-sm text-mono-sm">
-<span>CORE v4.2.9</span>
-<span class="text-primary">CLUSTER HEALTH: OPTIMAL</span>
-</div>
 </div>
 </footer>
 {% endblock %}

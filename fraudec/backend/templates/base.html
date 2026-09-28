@@ -22,6 +22,7 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="{{ url_for('static', path='theme.js') }}"></script>
+  <script src="{{ url_for('static', path='format.js') }}"></script>
 
   {% block head %}{% endblock %}
 </head>
@@ -34,16 +35,8 @@
           <span class="material-symbols-outlined text-primary text-[20px]">shield_person</span>
         </div>
         <div class="flex flex-col overflow-hidden">
-          <span class="font-mono-md text-mono-md text-on-surface truncate">SecOps Specialist</span>
-          <span class="font-label-caps text-label-caps text-primary uppercase">Tier 3 Clearance</span>
-        </div>
-      </div>
-
-      <div class="mx-space-md px-space-sm py-space-xs rounded bg-surface-container-low flex items-center justify-between">
-        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Persona Node</span>
-        <div class="flex items-center gap-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-ping"></span>
-          <span class="font-mono-sm text-mono-sm text-primary">ONLINE</span>
+          <span class="font-mono-md text-mono-md text-on-surface truncate" id="sidebar-persona-name">–</span>
+          <span class="font-label-caps text-label-caps text-primary uppercase" id="sidebar-user-id">–</span>
         </div>
       </div>
 
@@ -67,24 +60,6 @@
     </div>
 
     <div class="flex flex-col gap-space-sm px-space-sm">
-      <div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-space-xs">
-        <div class="flex items-center justify-between">
-          <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Telemetry Gauges</span>
-          <span class="material-symbols-outlined text-primary text-[14px]">bolt</span>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Active Model</span>
-          <span class="font-mono-sm text-mono-sm text-primary">XGBoost-v2</span>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Stream Speed</span>
-          <span class="font-mono-sm text-mono-sm text-on-surface">14.8k tx/s</span>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Heap Memory</span>
-          <span class="font-mono-sm text-mono-sm text-on-surface">412 MB</span>
-        </div>
-      </div>
       <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-error hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="demo-login" href="/preview/login" id="logout-link" onclick="localStorage.removeItem('fraudec_token'); localStorage.removeItem('fraudec_user_id'); localStorage.removeItem('fraudec_persona_name');">
         <span class="material-symbols-outlined text-[18px]">logout</span>
         <span class="font-body-md text-body-md">Logout</span>
@@ -99,16 +74,8 @@
           <img alt="Fraudec Logo" class="h-8 w-auto object-contain" src="{{ url_for('static', path='fraudec_logo.svg') }}" />
           <span class="font-headline-md text-headline-md tracking-tight text-primary">Fraudec</span>
         </div>
-        <div class="hidden lg:flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-low">
-          <span class="material-symbols-outlined text-primary text-[16px]">memory</span>
-          <span class="font-mono-sm text-mono-sm text-on-surface">FEED: 0.04% CRITICAL RISK DETECTED</span>
-        </div>
       </div>
       <div class="flex items-center gap-space-md">
-        <div class="hidden sm:flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-high">
-          <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
-          <span class="font-mono-sm text-mono-sm text-primary">INFERENCE LATENCY: 9.4MS</span>
-        </div>
         <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
           <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
         </div>
@@ -122,6 +89,16 @@
     </main>
   </div>
 
+  <script>
+    (function () {
+      var nameEl = document.getElementById('sidebar-persona-name');
+      var idEl = document.getElementById('sidebar-user-id');
+      var personaName = localStorage.getItem('fraudec_persona_name');
+      var userId = localStorage.getItem('fraudec_user_id');
+      if (nameEl) nameEl.textContent = personaName || '–';
+      if (idEl) idEl.textContent = userId ? userId.toUpperCase() : '–';
+    })();
+  </script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

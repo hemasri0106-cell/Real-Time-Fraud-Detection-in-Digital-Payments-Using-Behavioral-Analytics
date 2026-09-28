@@ -1,0 +1,21 @@
+feature,importance
+num__location_visit_frequency,0.19268063
+num__new_device,0.14588939
+num__device_usage_frequency,0.09936353
+cat__city_Hyderabad,0.09532925
+cat__city_Surat,0.06314694
+cat__city_Goa,0.045131344
+num__distance_from_last_transaction_km,0.035676155
+cat__device_id_DEV-09-3,0.03555729
+cat__merchant_category_International Transfer,0.030537058
+num__new_location,0.023952827
+cat__merchant_category_Software,0.023186736
+cat__payment_method_Card,0.023117624
+cat__city_Pune,0.020693284
+cat__city_Chennai,0.019564021
+cat__city_Bangalore,0.019191112
+cat__city_Dubai,0.018071525
+cat__device_id_DEV-09-1,0.015259313
+cat__merchant_category_Coffee,0.015149493
+cat__device_id_DEV-09-2,0.012442097
+cat__payment_method_UPI,0.010590759

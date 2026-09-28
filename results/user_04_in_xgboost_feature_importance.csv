@@ -1,0 +1,21 @@
+feature,importance
+cat__merchant_category_Bank Transfer,0.36250356
+num__device_usage_frequency,0.27309328
+cat__merchant_category_Overseas Merchant,0.21330266
+cat__merchant_category_Suppliers,0.06975954
+num__transaction_gap_minutes,0.035508532
+cat__payment_method_Card,0.019806905
+cat__device_id_DEV-04-2,0.007276129
+num__transaction_amount,0.006333902
+cat__payment_method_UPI,0.0028653848
+cat__merchant_category_Hotels,0.0024912022
+num__merchant_visit_frequency,0.0023281928
+num__hour_of_day,0.0013286857
+num__location_visit_frequency,0.0010759331
+num__distance_from_last_transaction_km,0.0009086563
+cat__device_id_DEV-04-1,0.0005961922
+cat__payment_method_Bank Transfer,0.00047908246
+num__daily_transaction_count,0.00034219265
+cat__device_id_DEV-UNK-2425,0.0
+cat__device_id_DEV-UNK-6605,0.0
+cat__device_id_DEV-UNK-8472,0.0

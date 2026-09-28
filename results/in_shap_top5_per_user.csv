@@ -1,0 +1,11 @@
+user_id,top5_shap_features
+user_01,"transaction_amount, hour_of_day, device_usage_frequency, merchant_visit_frequency, merchant_category_Food"
+user_02,"device_id_DEV-02-1, merchant_visit_frequency, merchant_category_Grocery, transaction_gap_minutes, transaction_amount"
+user_03,"device_id_DEV-03-1, payment_method_Card, merchant_visit_frequency, merchant_category_Grocery, merchant_category_Household"
+user_04,"merchant_category_Bank Transfer, merchant_category_Overseas Merchant, device_usage_frequency, transaction_amount, device_id_DEV-04-1"
+user_05,"device_id_DEV-05-1, transaction_amount, hour_of_day, merchant_visit_frequency, location_visit_frequency"
+user_06,"merchant_category_ATM Withdrawal, device_id_DEV-06-1, distance_from_last_transaction_km, merchant_visit_frequency, merchant_category_Medical"
+user_07,"device_id_DEV-07-1, merchant_category_Pharmacy, merchant_category_Grocery, merchant_category_Utility Bills, merchant_visit_frequency"
+user_08,"device_id_DEV-08-1, transaction_amount, hour_of_day, merchant_category_Unknown Merchant, merchant_visit_frequency"
+user_09,"location_visit_frequency, device_usage_frequency, distance_from_last_transaction_km, merchant_category_Software, payment_method_Card"
+user_10,"merchant_visit_frequency, merchant_category_Airlines, device_id_DEV-10-1, city_Mumbai, location_visit_frequency"

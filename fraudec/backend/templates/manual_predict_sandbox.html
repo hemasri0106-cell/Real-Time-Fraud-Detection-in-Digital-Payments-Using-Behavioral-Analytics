@@ -9,8 +9,6 @@
 <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
 <div class="flex flex-col gap-space-xs max-w-3xl">
 <div class="flex items-center gap-space-xs">
-<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-label-caps text-label-caps text-primary uppercase tracking-wider">SEC-OPS SANDBOX // ACTIVE</span>
-<span class="text-on-surface-variant font-mono-sm text-mono-sm">::</span>
 <span class="text-on-surface-variant font-mono-sm text-mono-sm" id="target-id-label">TARGET_ID: –</span>
 <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse ml-1"></span>
 </div>
@@ -26,7 +24,6 @@
 <div class="flex flex-col">
 <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Model Signature</span>
 <span class="font-mono-md text-mono-md text-primary font-semibold">user_02_v2_xgboost</span>
-<span class="font-mono-sm text-mono-sm text-on-surface-variant">Weight Sync: 4m ago</span>
 </div>
 </div>
 </div>
@@ -38,15 +35,15 @@
       </span>
 <button class="px-space-sm py-space-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-mono-sm text-mono-sm transition-all flex items-center gap-2 shadow-sm group" onclick="applyPreset('normal')">
 <span class="w-2 h-2 rounded-full bg-secondary"></span>
-<span>Normal: Hospital Cafe ($12.40)</span>
+<span>Normal (₹12.40)</span>
 </button>
 <button class="px-space-sm py-space-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-mono-sm text-mono-sm transition-all flex items-center gap-2 shadow-sm group" onclick="applyPreset('borderline')">
 <span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
-<span>Borderline: Chicago Med Conf ($1,200.00)</span>
+<span>Borderline (₹1,200.00)</span>
 </button>
 <button class="px-space-sm py-space-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-mono-sm text-mono-sm transition-all flex items-center gap-2 shadow-sm group" onclick="applyPreset('attack')">
 <span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
-<span class="text-error font-semibold">Attack Vector: Moscow Crypto ($8,000.00)</span>
+<span class="text-error font-semibold">Attack Vector (₹8,000.00)</span>
 </button>
 </div>
 </div>
@@ -68,19 +65,18 @@
 <!-- Amount Input & Quick Chips -->
 <div class="flex flex-col gap-space-xs">
 <div class="flex justify-between items-center">
-<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-amount">Transaction Amount (USD)</label>
-<span class="font-mono-sm text-mono-sm text-primary" id="amount-tag">μ=$142.10 | σ=±$45</span>
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-amount">Transaction Amount (INR)</label>
 </div>
 <div class="relative">
-<span class="absolute left-3 top-2.5 font-mono-md text-mono-md text-on-surface-variant">$</span>
+<span class="absolute left-3 top-2.5 font-mono-md text-mono-md text-on-surface-variant">₹</span>
 <input class="w-full bg-surface-container-low pl-8 pr-3 py-2 rounded font-mono-lg text-mono-lg text-on-surface focus:outline-none focus:bg-surface-container-highest transition-all" id="field-amount" step="0.01" type="number" value="8000.00"/>
 </div>
 <div class="flex items-center gap-1.5 pt-1">
-<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(25)" type="button">$25</button>
-<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(150)" type="button">$150</button>
-<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(1500)" type="button">$1,500</button>
-<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(5000)" type="button">$5,000</button>
-<button class="px-2 py-1 rounded bg-surface-container-highest font-mono-sm text-mono-sm text-primary transition-all" onclick="setAmount(8000)" type="button">$8,000</button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(25)" type="button">₹25</button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(150)" type="button">₹150</button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(1500)" type="button">₹1,500</button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest font-mono-sm text-mono-sm text-on-surface transition-all" onclick="setAmount(5000)" type="button">₹5,000</button>
+<button class="px-2 py-1 rounded bg-surface-container-highest font-mono-sm text-mono-sm text-primary transition-all" onclick="setAmount(8000)" type="button">₹8,000</button>
 </div>
 </div>
 <!-- Merchant Category Dropdown -->
@@ -147,7 +143,7 @@
 </div>
 <input class="w-full accent-primary-container bg-surface-container-high h-1.5 rounded cursor-pointer" id="field-distance" max="15000" min="0" oninput="updateDistance(this.value)" step="50" type="range" value="7140"/>
 <div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
-<span>0 km (Local Boston Hub)</span>
+<span>0 km (Same Location)</span>
 <span>15,000 km (Intercontinental)</span>
 </div>
 </div>
@@ -166,7 +162,7 @@
 <!-- Time of Transaction -->
 <div class="flex flex-col gap-space-xs">
 <div class="flex justify-between items-center">
-<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-hour">Timestamp Offset (EST)</label>
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="field-hour">Timestamp Offset (IST)</label>
 <span class="font-mono-md text-mono-md text-on-surface" id="time-display">03:45 AM (Off-Shift Surge)</span>
 </div>
 <input class="w-full accent-primary bg-surface-container-high h-1.5 rounded cursor-pointer" id="field-hour" max="23" min="0" oninput="updateTime(this.value)" type="range" value="3"/>
@@ -185,11 +181,6 @@
 </div>
 </form>
 </div>
-<!-- Inline micro telemetry telemetry footnote -->
-<div class="mt-space-md pt-space-xs flex items-center justify-between font-mono-sm text-mono-sm text-on-surface-variant">
-<span>PIPELINE: STREAM-INSPECT-4.2</span>
-<span>GPU ACCEL: ENABLED</span>
-</div>
 </div>
 </div>
 <!-- RIGHT COLUMN: Real-Time Inference Results & XAI Engine (7 cols) -->
@@ -207,7 +198,6 @@
 <div class="flex flex-col">
 <div class="flex items-center gap-space-xs">
 <span class="px-space-xs py-0.5 rounded font-label-caps text-label-caps bg-error/20 text-error uppercase tracking-wider font-semibold" id="status-badge">POLICY EXCEPTION TRIGGERED</span>
-<span class="font-mono-sm text-mono-sm text-on-surface-variant">GATE: HARD_STOP</span>
 </div>
 <span class="font-headline-xl text-headline-xl text-error tracking-tight font-bold" id="status-headline">TRANSACTION BLOCKED</span>
 </div>
@@ -223,7 +213,7 @@
 </div>
 </div>
 <!-- Metrics Tonal Grid -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm my-space-md">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm my-space-md">
 <!-- Circular Gauge for Risk -->
 <div class="rounded-lg bg-surface-container-low p-space-md flex flex-col items-center justify-center text-center relative overflow-hidden">
 <span class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Calculated Fraud Risk</span>
@@ -234,10 +224,9 @@
 </svg>
 <div class="absolute flex flex-col items-center">
 <span class="font-mono-xl text-mono-xl text-on-surface font-bold leading-none" id="risk-score-display">96.4%</span>
-<span class="font-label-caps text-label-caps text-error mt-0.5">CRITICAL</span>
 </div>
 </div>
-<span class="font-mono-sm text-mono-sm text-on-surface-variant mt-2">Cutoff: 65.0% Risk</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant mt-2">Cutoff: 50.0% Risk</span>
 </div>
 <!-- Confidence Score -->
 <div class="rounded-lg bg-surface-container-low p-space-md flex flex-col justify-between">
@@ -253,21 +242,6 @@
 </div>
 <span class="font-mono-sm text-mono-sm text-on-surface-variant mt-2" id="entropy-index-value">Entropy Index: –</span>
 </div>
-<!-- Latency Gauge -->
-<div class="rounded-lg bg-surface-container-low p-space-md flex flex-col justify-between">
-<div>
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Inference Performance</span>
-<div class="mt-space-xs flex items-baseline gap-1">
-<span class="font-mono-xl text-mono-xl text-primary font-bold">8.2</span>
-<span class="font-mono-md text-mono-md text-on-surface-variant">ms</span>
-</div>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Hardware: TensorCore v4</span>
-</div>
-<div class="flex items-center gap-space-xs text-primary font-mono-sm text-mono-sm">
-<span class="material-symbols-outlined text-[14px]">speed</span>
-<span>122,000 req/sec</span>
-</div>
-</div>
 </div>
 <!-- Explainable AI (SHAP Analysis) -->
 <div class="mt-space-md">
@@ -276,71 +250,17 @@
 <span class="material-symbols-outlined text-primary text-[18px]">account_tree</span>
 <span class="font-headline-md text-headline-md text-on-surface">Feature Contribution Breakdown (SHAP Values)</span>
 </div>
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Base Value E[f(x)] = 0.04</span>
 </div>
 <div class="flex flex-col gap-space-sm bg-surface-container-low p-space-md rounded-lg" id="feature-contribution-list">
 <!-- Populated at runtime from the real XGBoost top_features response -->
 </div>
 </div>
-<!-- Decision Tree Path Visualization -->
-<div class="mt-space-md">
-<div class="flex items-center justify-between mb-space-xs">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Active Branch Execution Path</span>
-<button class="font-mono-sm text-mono-sm text-primary hover:underline flex items-center gap-1" onclick="toggleTreeDetails()">
-<span id="tree-toggle-text">Collapse Logic Map</span>
-<span class="material-symbols-outlined text-[14px]">unfold_more</span>
-</button>
-</div>
-<div class="rounded-lg bg-surface-container-lowest p-space-md overflow-x-auto" id="tree-container">
-<div class="flex items-center gap-3 min-w-[540px]">
-<!-- Node 1 -->
-<div class="p-2.5 rounded bg-surface-container-high flex flex-col gap-1 flex-1 shadow-sm">
-<div class="flex items-center justify-between">
-<span class="font-label-caps text-label-caps text-primary">SPLIT 01</span>
-<span class="material-symbols-outlined text-[14px] text-primary">check_circle</span>
-</div>
-<span class="font-mono-sm text-mono-sm text-on-surface font-semibold">Amount &gt; $2,000.00</span>
-<span class="font-mono-sm text-mono-sm text-on-surface-variant">Eval: TRUE ($8,000.00)</span>
-</div>
-<span class="material-symbols-outlined text-primary text-[18px]">arrow_right_alt</span>
-<!-- Node 2 -->
-<div class="p-2.5 rounded bg-surface-container-high flex flex-col gap-1 flex-1 shadow-sm">
-<div class="flex items-center justify-between">
-<span class="font-label-caps text-label-caps text-primary">SPLIT 02</span>
-<span class="material-symbols-outlined text-[14px] text-primary">check_circle</span>
-</div>
-<span class="font-mono-sm text-mono-sm text-on-surface font-semibold">Geo Distance &gt; 500km</span>
-<span class="font-mono-sm text-mono-sm text-on-surface-variant">Eval: TRUE (7,140km)</span>
-</div>
-<span class="material-symbols-outlined text-error text-[18px]">arrow_right_alt</span>
-<!-- Node 3 (Terminal Leaf) -->
-<div class="p-2.5 rounded bg-error-container/40 flex flex-col gap-1 flex-1 shadow-sm">
-<div class="flex items-center justify-between">
-<span class="font-label-caps text-label-caps text-error font-bold">TERMINAL LEAF</span>
-<span class="material-symbols-outlined text-[14px] text-error">priority_high</span>
-</div>
-<span class="font-mono-sm text-mono-sm text-error font-bold">ANOMALY [CLASS 1]</span>
-<span class="font-mono-sm text-mono-sm text-on-surface-variant">Leaf Weight: 0.964</span>
-</div>
-</div>
-</div>
-</div>
 <!-- Action Tray -->
-<div class="mt-space-lg pt-space-md flex flex-wrap items-center justify-between gap-space-sm">
-<div class="flex items-center gap-space-sm">
-<button class="px-space-md py-2 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-mono-sm text-mono-sm flex items-center gap-2 shadow-sm transition-all" onclick="saveScenario()">
-<span class="material-symbols-outlined text-[16px] text-primary">bookmark_add</span>
-<span>Save Scenario to Test Suite</span>
-</button>
+<div class="mt-space-lg pt-space-md flex items-center gap-space-sm">
 <button class="px-space-md py-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-mono-sm text-mono-sm flex items-center gap-2 transition-all" onclick="resetSandbox()">
 <span class="material-symbols-outlined text-[16px]">refresh</span>
 <span>Reset Parameters</span>
 </button>
-</div>
-<div class="flex items-center gap-1 font-mono-sm text-mono-sm text-on-surface-variant">
-<span class="material-symbols-outlined text-[14px] text-primary">verified_user</span>
-<span>SHAP Explainer v2.8 Core</span>
-</div>
 </div>
 </div>
 </div>
@@ -362,13 +282,8 @@
 </div>
 <div class="flex items-center gap-space-md shrink-0">
 <div class="flex flex-col text-right">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Model Precision</span>
-<span class="font-mono-md text-mono-md text-primary font-bold" id="model-roc-auc-label">– ROC-AUC</span>
-</div>
-<div class="w-px h-8 bg-surface-container-high"></div>
-<div class="flex flex-col text-right">
 <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Trained Samples</span>
-<span class="font-mono-md text-mono-md text-on-surface font-semibold">14,209 tx</span>
+<span class="font-mono-md text-mono-md text-on-surface font-semibold" id="trained-samples-label">– tx</span>
 </div>
 </div>
 </div>
@@ -438,15 +353,15 @@
     if (drawerNameEl) drawerNameEl.innerText = personaName;
   }
 
-  async function loadRocAuc() {
+  async function loadTrainedSamples() {
     try {
       const res = await fetch('/api/metrics', {
         headers: { 'Authorization': 'Bearer ' + getToken() },
       });
       if (!res.ok) return;
       const metrics = await res.json();
-      if (metrics && metrics.test_roc_auc) {
-        document.getElementById('model-roc-auc-label').innerText = (Number(metrics.test_roc_auc) * 100).toFixed(2) + '% ROC-AUC';
+      if (metrics && metrics.trained_samples) {
+        document.getElementById('trained-samples-label').innerText = Number(metrics.trained_samples).toLocaleString() + ' tx';
       }
     } catch (err) {
       console.error('Failed to load /api/metrics', err);
@@ -645,23 +560,6 @@
     }
   }
 
-  function toggleTreeDetails() {
-    const el = document.getElementById('tree-container');
-    const text = document.getElementById('tree-toggle-text');
-    if (el.classList.contains('hidden')) {
-      el.classList.remove('hidden');
-      text.innerText = 'Collapse Logic Map';
-    } else {
-      el.classList.add('hidden');
-      text.innerText = 'Expand Logic Map';
-    }
-  }
-
-  function saveScenario() {
-    const { personaName } = getPersonaIdentity();
-    alert(`Payload successfully packaged and written to ${personaName}'s XGBoost automated regression suite.`);
-  }
-
   function resetSandbox() {
     applyPreset('attack');
   }
@@ -671,7 +569,7 @@
   } else {
     applyPersonaIdentity();
     resetSandbox();
-    loadRocAuc();
+    loadTrainedSamples();
   }
 </script>
 {% endblock %}

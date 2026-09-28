@@ -42,7 +42,7 @@
 </div>
 </div>
 <!-- KPI Metric Cards: Top Row (4 Columns) -->
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md mb-space-lg">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md mb-space-lg">
 <!-- Card 1: Total Transactions Evaluated -->
 <div class="group relative overflow-hidden rounded-xl bg-surface-container p-space-md shadow-md transition-all duration-300 hover:shadow-xl hover:translate-y-[-2px]">
 <div class="absolute inset-0 bg-gradient-to-br from-primary-container/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -70,52 +70,10 @@
         </span>
 </div>
 <div class="flex items-baseline gap-space-sm relative z-10">
-<span class="font-mono-xl text-mono-xl text-on-surface tracking-tight" id="kpi-blocked-amount">$0.00</span>
+<span class="font-mono-xl text-mono-xl text-on-surface tracking-tight" id="kpi-blocked-amount">₹0.00</span>
 </div>
 <div class="mt-space-sm flex items-end justify-between pt-space-xs relative z-10">
-<span class="font-body-sm text-body-sm text-on-surface-variant">Sum of RF-blocked transaction amounts</span>
-</div>
-</div>
-<!-- Card 3: False Positive Rate -->
-<div class="group relative overflow-hidden rounded-xl bg-surface-container p-space-md shadow-md transition-all duration-300 hover:shadow-xl hover:translate-y-[-2px]">
-<div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<div class="flex items-start justify-between mb-space-sm relative z-10">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">False Positive Rate</span>
-<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
-<span class="material-symbols-outlined text-[16px]">verified</span>
-</div>
-</div>
-<div class="flex items-baseline gap-space-sm relative z-10">
-<span class="font-mono-xl text-mono-xl text-on-surface tracking-tight" id="kpi-fpr">–</span>
-<span class="font-mono-sm text-mono-sm text-primary bg-surface-container-highest px-1.5 py-0.5 rounded">
-          Goal: &lt;0.10%
-        </span>
-</div>
-<div class="mt-space-sm flex items-center justify-between pt-space-xs relative z-10">
-<span class="font-body-sm text-body-sm text-on-surface-variant" id="kpi-fpr-caption">No replayed history with known labels yet</span>
-<div class="flex items-center gap-1 text-primary font-mono-sm text-mono-sm" id="kpi-fpr-badge">
-<span class="material-symbols-outlined text-[16px]">hourglass_empty</span>PENDING
-        </div>
-</div>
-</div>
-<!-- Card 4: Model Accuracy & ROC-AUC -->
-<div class="group relative overflow-hidden rounded-xl bg-surface-container p-space-md shadow-md transition-all duration-300 hover:shadow-xl hover:translate-y-[-2px]">
-<div class="absolute inset-0 bg-gradient-to-br from-secondary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<div class="flex items-start justify-between mb-space-sm relative z-10">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Model Accuracy &amp; ROC-AUC</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-highest font-mono-sm text-mono-sm text-primary">
-          XGBoost-v2
-        </span>
-</div>
-<div class="flex items-baseline gap-space-sm relative z-10">
-<span class="font-mono-xl text-mono-xl text-on-surface tracking-tight" id="kpi-rocauc">–</span>
-<span class="font-label-caps text-label-caps text-primary uppercase">AUC RANK</span>
-</div>
-<div class="mt-space-sm flex items-center justify-between pt-space-xs relative z-10">
-<span class="font-body-sm text-body-sm text-on-surface-variant">Held-out test set</span>
-<div class="w-16 h-2 rounded-full bg-surface-container-highest overflow-hidden">
-<div class="h-full bg-primary-container rounded-full" id="kpi-rocauc-bar" style="width: 0%"></div>
-</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sum of XGBoost-blocked transaction amounts</span>
 </div>
 </div>
 </div>
@@ -159,7 +117,7 @@
 <span class="relative z-10 font-mono-sm text-mono-sm text-on-surface-variant" id="timeline-empty">No predictions logged for this persona yet in this window.</span>
 <div class="relative z-10 flex justify-between pt-2 border-t border-surface-variant/40 font-mono-sm text-mono-sm text-on-surface-variant">
 <span id="timeline-x-start">–</span>
-<span class="text-error font-semibold">0.65 cutoff</span>
+<span class="text-error font-semibold">0.5 cutoff</span>
 <span id="timeline-x-end">–</span>
 </div>
 </div>
@@ -204,10 +162,6 @@
 <!-- Category Legend Breakdown Table - built at runtime -->
 <div class="flex flex-col gap-space-xs mt-space-sm" id="category-legend-list"></div>
 </div>
-<div class="mt-space-md p-space-sm rounded-lg bg-surface-container-lowest flex items-center justify-between">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Auto-Policy Quarantine</span>
-<span class="font-mono-sm text-mono-sm text-primary">STRICT CONVERGENCE</span>
-</div>
 </div>
 </div>
 <!-- Bottom Grid: Feature Importance Ranking + Blocked Incident Log -->
@@ -241,9 +195,6 @@
 <span class="material-symbols-outlined text-error text-[20px]">manage_accounts</span>
 <h2 class="font-headline-md text-headline-md text-on-surface">Recent Intercepted Threat Log</h2>
 </div>
-<span class="px-2 py-0.5 rounded-full bg-error-container text-error font-label-caps text-label-caps">
-            AUTOMATIC DRILL-DOWN
-          </span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md" id="blocked-log-caption">
           Most recent XGBoost-blocked predictions logged for this persona (manual sandbox + replayed history).
@@ -335,45 +286,18 @@
     return name.replace(/^(num__|cat__)/, '').replace(/_/g, ' ');
   }
 
-  function formatMoney(v) {
-    return '$' + Number(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
   function formatTimestamp(iso) {
     if (!iso) return '–';
     const d = new Date(iso);
     return d.toLocaleString(undefined, { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
   }
 
-  function renderKpis(data, rocAuc) {
+  function renderKpis(data) {
     const t = data.totals;
     document.getElementById('kpi-total-tx').textContent = t.total_transactions.toLocaleString();
 
     document.getElementById('kpi-intercept-count').textContent = t.blocked_count.toLocaleString();
     document.getElementById('kpi-blocked-amount').textContent = formatMoney(t.blocked_amount_sum);
-
-    const fprEl = document.getElementById('kpi-fpr');
-    const fprCaption = document.getElementById('kpi-fpr-caption');
-    const fprBadge = document.getElementById('kpi-fpr-badge');
-    if (t.false_positive_rate === null) {
-      fprEl.textContent = '–';
-      fprCaption.textContent = 'No replayed history with known labels yet';
-      fprBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">hourglass_empty</span>PENDING';
-    } else {
-      const pct = t.false_positive_rate * 100;
-      fprEl.textContent = pct.toFixed(2) + '%';
-      fprCaption.textContent = `Based on ${t.false_positive_eligible_count} replayed txns with known-legitimate ground truth`;
-      if (pct < 0.10) {
-        fprBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">check_circle</span>OPTIMAL';
-      } else {
-        fprBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">warning</span>REVIEW';
-      }
-    }
-
-    if (rocAuc !== null) {
-      document.getElementById('kpi-rocauc').textContent = Number(rocAuc).toFixed(4);
-      document.getElementById('kpi-rocauc-bar').style.width = (rocAuc * 100).toFixed(1) + '%';
-    }
   }
 
   function renderTimeline(data) {
@@ -495,9 +419,9 @@
     }).join('');
   }
 
-  function renderAll(data, rocAuc) {
+  function renderAll(data) {
     lastAnalytics = data;
-    renderKpis(data, rocAuc);
+    renderKpis(data);
     renderTimeline(data);
     renderCategoryDonut(data);
     renderFeatureImportance(data);
@@ -507,11 +431,8 @@
   async function loadAnalytics(days) {
     try {
       const url = '/api/analytics' + (days ? ('?days=' + days) : '');
-      const [analytics, metrics] = await Promise.all([
-        authedFetch(url),
-        authedFetch('/api/metrics'),
-      ]);
-      renderAll(analytics, metrics && metrics.test_roc_auc ? metrics.test_roc_auc : null);
+      const analytics = await authedFetch(url);
+      renderAll(analytics);
     } catch (err) {
       console.error('Failed to load analytics', err);
     }

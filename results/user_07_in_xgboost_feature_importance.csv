@@ -1,0 +1,21 @@
+feature,importance
+cat__device_id_DEV-07-1,0.20068009
+cat__device_type_Android,0.16004907
+num__merchant_visit_frequency,0.121864825
+num__device_usage_frequency,0.073911436
+cat__merchant_category_Crypto Exchange,0.05591416
+cat__merchant_category_Pharmacy,0.051143114
+cat__merchant_category_Gaming Website,0.0482426
+cat__merchant_category_Grocery,0.04803836
+cat__merchant_category_Utility Bills,0.047274303
+num__hour_of_day,0.03946998
+num__location_visit_frequency,0.031180292
+num__transaction_amount,0.027593607
+num__average_amount_last_7_days,0.022643099
+cat__device_id_DEV-07-2,0.014824129
+cat__merchant_category_Bank Transfer,0.014115504
+cat__payment_method_UPI,0.013861891
+cat__payment_method_Card,0.013376359
+cat__device_id_DEV-07-3,0.0069013424
+num__daily_transaction_count,0.0055443696
+num__transaction_gap_minutes,0.002985605

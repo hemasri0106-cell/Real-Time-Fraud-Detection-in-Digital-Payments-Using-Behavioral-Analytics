@@ -312,6 +312,13 @@ def get_analytics(days: int = None, current_user: models.User = Depends(auth.get
         for r in rows[-50:]
     ]
 
+    # 10 real bins (0.0-0.1 ... 0.9-1.0) over every predicted probability for
+    # this persona - not just the last-50 slice used for the timeline chart.
+    probability_histogram = [0] * 10
+    for r in rows:
+        bin_index = min(int(r.fraud_probability * 10), 9)
+        probability_histogram[bin_index] += 1
+
     recent_blocked = [
         _serialize_prediction(r)
         for r in sorted(blocked_rows, key=lambda r: r.created_at or datetime.min, reverse=True)[:8]
@@ -332,6 +339,7 @@ def get_analytics(days: int = None, current_user: models.User = Depends(auth.get
         },
         "category_breakdown": category_breakdown,
         "timeline": timeline,
+        "probability_histogram": probability_histogram,
         "recent_blocked": recent_blocked,
         "feature_importances": ml_service.get_global_feature_importances(user_id, top_n=6),
         "model_last_modified": ml_service.get_model_last_modified(user_id),
@@ -368,5 +376,21 @@ def preview_analytics(request: Request):
 
 
 @app.get("/preview/login")
-def preview_login(request: Request):
-    return templates.TemplateResponse("demo_persona_login_gateway.html", {"request": request})
+def preview_login(request: Request, db: Session = Depends(get_db)):
+    persona_count = len(ml_service.get_valid_user_ids())
+    avg_roc_auc = ml_service.get_average_roc_auc()
+
+    # Real aggregate false-positive rate across every persona's replayed
+    # history with known ground truth (true_label only exists on replay rows).
+    fp_eligible = db.query(models.Prediction).filter(
+        models.Prediction.source == "replay", models.Prediction.true_label == 0
+    ).all()
+    fp_blocked = [r for r in fp_eligible if r.prediction == 1]
+    aggregate_fpr = (len(fp_blocked) / len(fp_eligible)) if fp_eligible else None
+
+    return templates.TemplateResponse("demo_persona_login_gateway.html", {
+        "request": request,
+        "persona_count": persona_count,
+        "avg_roc_auc": avg_roc_auc,
+        "aggregate_fpr": aggregate_fpr,
+    })
