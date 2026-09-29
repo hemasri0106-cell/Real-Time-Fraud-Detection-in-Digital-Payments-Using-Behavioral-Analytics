@@ -332,6 +332,9 @@ def predict(payload: dict, current_user: models.User = Depends(auth.get_current_
     except (FileNotFoundError, OSError):
         raise HTTPException(status_code=503, detail="Prediction model is unavailable")
     except Exception:
+        # Keep request bodies, authorization headers, and tokens out of logs.
+        # The traceback identifies the failing artifact/runtime operation.
+        logger.exception("Unexpected prediction failure for profile %s", user_id)
         raise HTTPException(status_code=500, detail="Prediction could not be completed")
 
 @app.get("/api/health")

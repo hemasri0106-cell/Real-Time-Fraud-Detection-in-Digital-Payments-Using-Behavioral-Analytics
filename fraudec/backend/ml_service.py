@@ -4,6 +4,7 @@ import pandas as pd
 from typing import Dict, Any, List
 from collections import OrderedDict
 import numpy as np
+from xgboost import XGBClassifier
 
 from dashboard_data import ALLOWED_USER_IDS, MODEL_FEATURES
 
@@ -24,12 +25,12 @@ def get_cached_model(user_id: str):
         _model_cache.move_to_end(user_id)
         return _model_cache[user_id]
         
-    model_path = os.path.join(MODELS_DIR, f"{user_id}_v2_random_forest.joblib")
+    model_path = os.path.join(MODELS_DIR, f"{user_id}_v2_xgboost.joblib")
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model for {user_id} not found.")
         
     model = joblib.load(model_path)
-    if type(model).__name__ != "RandomForestClassifier":
+    if not isinstance(model, XGBClassifier):
         raise ValueError("Unexpected model artifact type")
     _model_cache[user_id] = model
     
