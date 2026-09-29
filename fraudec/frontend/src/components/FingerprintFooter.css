@@ -7,6 +7,12 @@
   gap: 6px;
 }
 
+.login__left .fingerprint {
+  --muted: #82969a;
+  --text: #b6c7c3;
+  --signal: #77dcb4;
+}
+
 .fingerprint__row {
   display: flex;
   align-items: baseline;

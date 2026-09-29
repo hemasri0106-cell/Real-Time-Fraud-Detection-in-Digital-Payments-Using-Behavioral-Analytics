@@ -1,13 +1,13 @@
 :root {
-  --bg: #0a0f1c;
-  --panel: #0f1729;
-  --surface: #131d33;
-  --border: #223047;
-  --muted: #8996ac;
-  --text: #e7ecf5;
-  --signal: #2fbe8f;
-  --alert: #e2a33d;
-  --error: #d9534f;
+  --bg: #0b1117;
+  --panel: #111a22;
+  --surface: #15232c;
+  --border: rgba(171, 194, 205, 0.14);
+  --muted: #92a2a9;
+  --text: #e8efed;
+  --signal: #59d2d9;
+  --alert: #ed7994;
+  --error: #f18b9c;
 
   --font-display: 'Space Grotesk', 'Inter', sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
